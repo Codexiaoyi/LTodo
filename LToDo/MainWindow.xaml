@@ -1,0 +1,75 @@
+﻿<Window x:Class="LToDo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LToDo"
+        AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize"
+        mc:Ignorable="d" Background="Transparent" Topmost="{Binding Topmost}"
+        Title="MainWindow" Height="420" Width="320"
+        Loaded="Window_Loaded">
+    <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderThickness="0" CornerRadius="10">
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="0" Color="LightGray" Opacity="0.7" BlurRadius="15"/>
+        </Border.Effect>
+        <Grid Margin="10">
+            <Border Background="Black" Opacity="0.7" BorderThickness="1" BorderBrush="Gray" CornerRadius="10" MouseLeftButtonDown="Border_MouseLeftButtonDown"/>
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid Margin="15 10 15 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Time}" Foreground="White" FontSize="14" IsHitTestVisible="False"/>
+                    <Image x:Name="IsTopmost" Grid.Column="1" Source="/Top.png" Height="16" Width="16" SnapsToDevicePixels="True" ToolTip="置顶" Cursor="Hand" MouseLeftButtonUp="Image_MouseLeftButtonUp"/>
+                </Grid>
+                <Grid Grid.Row="1" Margin="15" Height="25">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="NewTask" AcceptsReturn="False" AcceptsTab="False" KeyUp="TextBox_KeyUp"/>
+                    <Border Grid.Column="1" Width="40" Margin="5 0 0 0" CornerRadius="7" Background="#1296db">
+                        <Button Background="Transparent" Content="添加" Foreground="White" FontSize="14" Click="Button_Click" BorderThickness="0" Cursor="Hand"/>
+                    </Border>
+                </Grid>
+                <ScrollViewer Grid.Row="2" Margin="15 0 15 15">
+                    <ItemsControl ItemsSource="{Binding Tasks}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="10 5">
+                                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsEnabled}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
+                                        <CheckBox.Template>
+                                            <ControlTemplate TargetType="CheckBox">
+                                                <TextBlock x:Name="_content" Text="{Binding Content}" FontSize="14" Cursor="Hand" TextWrapping="Wrap"/>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsChecked" Value="False">
+                                                        <Setter TargetName="_content" Property="TextDecorations" Value="Strikethrough"/>
+                                                        <Setter TargetName="_content" Property="Foreground" Value="Gray"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="_content" Property="Foreground" Value="White"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </CheckBox.Template>
+                                    </CheckBox>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
