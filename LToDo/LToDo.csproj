@@ -7,11 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Logo.ico" />
     <None Remove="Top.png" />
     <None Remove="TopBlue.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Logo.ico" />
     <Resource Include="Top.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

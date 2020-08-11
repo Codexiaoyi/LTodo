@@ -1,13 +1,29 @@
-﻿<Application x:Class="LToDo.App"
+﻿ <Application x:Class="LToDo.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:LToDo"
+             xmlns:tb="http://www.hardcodet.net/taskbar"
+             ShutdownMode="OnExplicitShutdown"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="./Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
+                <MenuItem Header="设置" Command="{Binding SettingCommand}" />
+                <Separator />
+                <MenuItem Header="退出" Command="{Binding ExitApplicationCommand}" />
+            </ContextMenu>
+            <tb:TaskbarIcon x:Key="Taskbar" 
+                            ToolTipText="LTodo" 
+                            IconSource="Logo.ico" 
+                            ContextMenu="{StaticResource SysTrayMenu}" 
+                            DoubleClickCommand="{Binding ShowWindowCommand}">
+                <tb:TaskbarIcon.DataContext>
+                    <local:NotifyIconViewModel />
+                </tb:TaskbarIcon.DataContext>
+            </tb:TaskbarIcon>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

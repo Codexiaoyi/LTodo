@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +14,12 @@ namespace LToDo
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            _taskbar = (TaskbarIcon)FindResource("Taskbar");
+            base.OnStartup(e);
+        }
+
+        private TaskbarIcon _taskbar;
     }
 }
