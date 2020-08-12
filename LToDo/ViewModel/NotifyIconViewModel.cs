@@ -3,21 +3,41 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace LToDo
 {
-    public class NotifyIconViewModel
+    public class NotifyIconViewModel : ViewModelBase
     {
+        public NotifyIconViewModel()
+        {
+            AutoRunIcon = SettingHelper.IsRegister("ltodo.exe") ? "  √" : string.Empty;
+        }
         /// <summary>
-        /// 设置
+        /// 开机自启
         /// </summary>
-        public ICommand SettingCommand
+        public ICommand AutoRunCommand
         {
             get
             {
                 return new DelegateCommand
                 {
-                    
+                    CommandAction = () =>
+                    {
+                        AutoRunIcon = string.Empty;
+                        if (SettingHelper.IsRegister("ltodo.exe"))
+                        {
+                            SettingHelper.UnregisterAutoRun();
+                        }
+                        else
+                        {
+                            var result = SettingHelper.RegisterAutoRun();
+                            if (result)
+                            {
+                                AutoRunIcon = "  √";
+                            }
+                        }
+                    }
                 };
             }
         }
@@ -30,6 +50,20 @@ namespace LToDo
             get
             {
                 return new DelegateCommand { CommandAction = () => Application.Current.Shutdown() };
+            }
+        }
+
+        private string _autoRunIcon;
+        public string AutoRunIcon
+        {
+            get
+            {
+                return _autoRunIcon;
+            }
+            set
+            {
+                _autoRunIcon = value;
+                PropertyChange(nameof(AutoRunIcon));
             }
         }
     }
