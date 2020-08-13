@@ -10,36 +10,73 @@ namespace LToDo
 {
     public class SettingHelper
     {
-        public static bool IsRegister(string key)
+        public static bool IsAutoRunEnabled()
         {
-            RegistryKey registry = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);//检索指定的子项
-            var getApp = registry.GetValue(key);
-            return getApp == null ? false : true;
+            try
+            {
+                bool _exist = false;
+                RegistryKey local = Registry.CurrentUser;
+                RegistryKey runs = local.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+                if (runs == null)
+                {
+                    RegistryKey key2 = local.CreateSubKey("SOFTWARE");
+                    RegistryKey key3 = key2.CreateSubKey("Microsoft");
+                    RegistryKey key4 = key3.CreateSubKey("Windows");
+                    RegistryKey key5 = key4.CreateSubKey("CurrentVersion");
+                    RegistryKey key6 = key5.CreateSubKey("Run");
+                    runs = key6;
+                }
+                string[] runsName = runs.GetValueNames();
+                foreach (string strName in runsName)
+                {
+                    if (strName.ToUpper() == "ltodo".ToUpper())
+                    {
+                        _exist = true;
+                        return _exist;
+                    }
+                }
+                return _exist;
+
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public static bool RegisterAutoRun()
+        public static bool AutoRun(bool isAutoRun)
         {
-            string appName = AppDomain.CurrentDomain.BaseDirectory + "LTodo.exe";//获取要自动运行的应用程序名
-            if (!System.IO.File.Exists(appName))//判断要自动运行的应用程序文件是否存在
+            try
+            {
+                RegistryKey local = Registry.CurrentUser;
+                RegistryKey key = local.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+                if (key == null)
+                {
+                    local.CreateSubKey("SOFTWARE//Microsoft//Windows//CurrentVersion//Run");
+                }
+                if (isAutoRun)//若开机自启动则添加键值对
+                {
+                    key.SetValue("ltodo", AppDomain.CurrentDomain.BaseDirectory + "LTodo.exe");
+                    key.Close();
+                }
+                else//否则删除键值对
+                {
+                    string[] keyNames = key.GetValueNames();
+                    foreach (string keyName in keyNames)
+                    {
+                        if (keyName.ToUpper() == "ltodo".ToUpper())
+                        {
+                            key.DeleteValue("ltodo");
+                            key.Close();
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
                 return false;
-            RegistryKey registry = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true
-                );//检索指定的子项
-            if (registry == null)//若指定的子项不存在
-                registry = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");//则创建指定的子项
-            registry.SetValue("ltodo.exe", appName);//设置该子项的新的“键值对”
-            return IsRegister("ltodo.exe") ? true : false;
-        }
-
-        public static bool UnregisterAutoRun()
-        {
-            string appName = AppDomain.CurrentDomain.BaseDirectory + "LTodo.exe";//获取要自动运行的应用程序名
-            if (!System.IO.File.Exists(appName))//判断要自动运行的应用程序文件是否存在
-                return false;
-            RegistryKey registry = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);//检索指定的子项
-            if (registry == null)//若指定的子项不存在
-                registry = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");//则创建指定的子项
-            registry.DeleteValue("ltodo.exe");//设置该子项的新的“键值对”
-            return IsRegister("ltodo.exe") ? true : false;
+            }
+            return true;
         }
     }
 }

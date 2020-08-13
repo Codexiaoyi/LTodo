@@ -11,7 +11,7 @@ namespace LToDo
     {
         public NotifyIconViewModel()
         {
-            AutoRunIcon = SettingHelper.IsRegister("ltodo.exe") ? "  √" : string.Empty;
+            AutoRunIcon = SettingHelper.IsAutoRunEnabled() ? "  √" : string.Empty;
         }
         /// <summary>
         /// 开机自启
@@ -25,13 +25,13 @@ namespace LToDo
                     CommandAction = () =>
                     {
                         AutoRunIcon = string.Empty;
-                        if (SettingHelper.IsRegister("ltodo.exe"))
+                        if (SettingHelper.IsAutoRunEnabled())
                         {
-                            SettingHelper.UnregisterAutoRun();
+                            SettingHelper.AutoRun(false);
                         }
                         else
                         {
-                            var result = SettingHelper.RegisterAutoRun();
+                            var result = SettingHelper.AutoRun(true);
                             if (result)
                             {
                                 AutoRunIcon = "  √";
