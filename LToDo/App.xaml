@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="./Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
+                <MenuItem Header="隐藏/显示" Command="{Binding HideCommand}" />
                 <MenuItem Header="设置">
                     <MenuItem Header="开机自启" Command="{Binding AutoRunCommand}" Icon="{Binding AutoRunIcon}"/>
                 </MenuItem>

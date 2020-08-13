@@ -13,6 +13,7 @@ namespace LToDo
         {
             AutoRunIcon = SettingHelper.IsAutoRunEnabled() ? "  √" : string.Empty;
         }
+
         /// <summary>
         /// 开机自启
         /// </summary>
@@ -36,6 +37,49 @@ namespace LToDo
                             {
                                 AutoRunIcon = "  √";
                             }
+                        }
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// 打开软件
+        /// </summary>
+        public ICommand ShowWindowCommand
+        {
+            get
+            {
+                return new DelegateCommand
+                {
+                    CommandAction = () =>
+                    {
+                        Application.Current.MainWindow.Show();
+                        Application.Current.MainWindow.Activate();
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// 隐藏/开启软件
+        /// </summary>
+        public ICommand HideCommand
+        {
+            get
+            {
+                return new DelegateCommand
+                {
+                    CommandAction = () =>
+                    {
+                        if (Application.Current.MainWindow.IsVisible)
+                        {
+                            Application.Current.MainWindow.Hide();
+                        }
+                        else
+                        {
+                            Application.Current.MainWindow.Show();
+                            Application.Current.MainWindow.Activate();
                         }
                     }
                 };
