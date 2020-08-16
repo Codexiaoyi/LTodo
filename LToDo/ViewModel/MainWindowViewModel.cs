@@ -72,7 +72,11 @@ namespace LToDo
                 SortSource = !_sort ? new BitmapImage(new Uri("Resources/Sort.png", UriKind.Relative)) : new BitmapImage(new Uri("Resources/SortBlue.png", UriKind.Relative));
                 SortToolTip = !_sort ? "排序" : "完成排序";
                 CanAdd = !_sort ? true : false;
-                Tasks.Where(x => x.IsEnabled).ToList().ForEach(x => x.CanMove = !_sort ? Visibility.Collapsed : Visibility.Visible);
+                Tasks.ToList().ForEach(x =>
+                {
+                    x.CanMove = x.IsEnabled ? !_sort ? Visibility.Collapsed : Visibility.Visible : x.CanMove;
+                    x.IsSort = _sort;
+                });
                 PropertyChange(nameof(CanAdd));
                 PropertyChange(nameof(Sort));
                 PropertyChange(nameof(SortSource));

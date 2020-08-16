@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
+using System.Windows.Input;
 
 namespace LToDo
 {
     public class TaskModel : ViewModelBase
     {
+        public bool IsSort;
+
         private int _number;
         /// <summary>
         /// Todo编号
@@ -64,7 +67,7 @@ namespace LToDo
             set
             {
                 _isEnabled = value;
-                CanMove = _isEnabled ? Visibility.Visible : Visibility.Collapsed;
+                CanMove = _isEnabled ? IsSort ? Visibility.Visible : CanMove : Visibility.Collapsed;
                 Number = _isEnabled ? Number : 0;
                 PropertyChange(nameof(IsEnabled));
             }
@@ -81,6 +84,26 @@ namespace LToDo
             {
                 _canMove = value;
                 PropertyChange(nameof(CanMove));
+            }
+        }
+
+        /// <summary>
+        /// 删除Todo
+        /// </summary>
+        public ICommand DeleteCommand
+        {
+            get
+            {
+                return new DelegateCommand
+                {
+                    CommandAction = () =>
+                    {
+                        if (App.Current.MainWindow is MainWindow mainWindow)
+                        {
+                            mainWindow._mainWindowViewModel.Tasks.Remove(this);
+                        }
+                    }
+                };
             }
         }
     }

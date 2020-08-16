@@ -20,7 +20,7 @@ namespace LToDo
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MainWindowViewModel _mainWindowViewModel;
+        public MainWindowViewModel _mainWindowViewModel;
         public MainWindow()
         {
             InitializeComponent();
@@ -100,7 +100,7 @@ namespace LToDo
 
         private void TodoList_Drop(object sender, DragEventArgs e)
         {
-            
+
         }
 
         private void TodoList_DragEnter(object sender, DragEventArgs e)

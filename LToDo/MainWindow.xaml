@@ -71,8 +71,20 @@
                                     <CheckBox Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" IsChecked="{Binding IsEnabled}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="0 5">
                                         <CheckBox.Template>
                                             <ControlTemplate TargetType="CheckBox">
-                                                <TextBlock x:Name="_content" Text="{Binding Text}" FontSize="14" Cursor="Hand" TextWrapping="Wrap"/>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock x:Name="_content" Text="{Binding Text}" FontSize="14" Cursor="Hand" TextWrapping="Wrap" Padding="0 0 3 0"/>
+                                                    <Button x:Name="_delete" Grid.Column="1" Width="14" VerticalAlignment="Center" HorizontalAlignment="Right" ToolTip="删除" Visibility="Collapsed" Command="{Binding DeleteCommand}">
+                                                        <Image Source="Resources/Delete.png" Width="14" Height="14"/>
+                                                    </Button>
+                                                </Grid>
                                                 <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="_delete" Property="Visibility" Value="Visible"/>
+                                                    </Trigger>
                                                     <Trigger Property="IsChecked" Value="False">
                                                         <Setter TargetName="_content" Property="TextDecorations" Value="Strikethrough"/>
                                                         <Setter TargetName="_content" Property="Foreground" Value="Gray"/>
