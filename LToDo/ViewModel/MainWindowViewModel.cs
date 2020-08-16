@@ -20,6 +20,12 @@ namespace LToDo
             {
                 Time = DateTime.Now.ToLongDateString().ToString();
             };
+            Tasks.CollectionChanged += Tasks_CollectionChanged;
+        }
+
+        private void Tasks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Tasks.Where(x => x.IsEnabled).ToList().ForEach(x => x.Number = Tasks.IndexOf(x) + 1);
         }
 
         private ObservableCollection<TaskModel> _tasks;
@@ -77,5 +83,6 @@ namespace LToDo
         public string SortToolTip { get; set; } = "排序";
         public bool CanAdd { get; set; } = true;
         #endregion
+
     }
 }

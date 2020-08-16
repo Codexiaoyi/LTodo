@@ -41,11 +41,13 @@
                         <Button Background="Transparent" Content="添加" Foreground="White" FontSize="14" Click="Button_Click" BorderThickness="0" Cursor="Hand" IsEnabled="{Binding CanAdd}"/>
                     </Border>
                 </Grid>
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="2" Margin="20 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button Click="Sort_Click" HorizontalAlignment="Right" Margin="0 0 20 0">
+                    <TextBlock Text="清单列表" Foreground="DarkGray"/>
+                    <Button Grid.Column="1" Click="Sort_Click" HorizontalAlignment="Right">
                         <Image Source="{Binding SortSource}" Width="12" Height="12" SnapsToDevicePixels="True" ToolTip="{Binding SortToolTip}"/>
                     </Button>
                 </Grid>
@@ -69,7 +71,7 @@
                                     <CheckBox Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" IsChecked="{Binding IsEnabled}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="0 5">
                                         <CheckBox.Template>
                                             <ControlTemplate TargetType="CheckBox">
-                                                <TextBlock x:Name="_content" Text="{Binding Content}" FontSize="14" Cursor="Hand" TextWrapping="Wrap"/>
+                                                <TextBlock x:Name="_content" Text="{Binding Text}" FontSize="14" Cursor="Hand" TextWrapping="Wrap"/>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsChecked" Value="False">
                                                         <Setter TargetName="_content" Property="TextDecorations" Value="Strikethrough"/>
