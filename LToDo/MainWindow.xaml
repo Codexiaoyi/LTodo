@@ -18,6 +18,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid Margin="15 10 15 0">
@@ -26,29 +27,46 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding Time}" Foreground="White" FontSize="14" IsHitTestVisible="False"/>
-                    <Image x:Name="IsTopmost" Grid.Column="1" Source="/Top.png" Height="16" Width="16" SnapsToDevicePixels="True" ToolTip="置顶" Cursor="Hand" MouseLeftButtonUp="Image_MouseLeftButtonUp"/>
+                    <Button Grid.Column="1" Click="IsTopmost_Click">
+                        <Image Source="{Binding TopmostSource}" Height="16" Width="16" SnapsToDevicePixels="True" ToolTip="{Binding TopmostToolTip}"/>
+                    </Button>
                 </Grid>
                 <Grid Grid.Row="1" Margin="15" Height="25">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="NewTask" AcceptsReturn="False" AcceptsTab="False" KeyUp="TextBox_KeyUp"/>
+                    <TextBox x:Name="NewTask" IsEnabled="{Binding CanAdd}" AcceptsReturn="False" AcceptsTab="False" KeyUp="TextBox_KeyUp"/>
                     <Border Grid.Column="1" Width="40" Margin="5 0 0 0" CornerRadius="7" Background="#1296db">
-                        <Button Background="Transparent" Content="添加" Foreground="White" FontSize="14" Click="Button_Click" BorderThickness="0" Cursor="Hand"/>
+                        <Button Background="Transparent" Content="添加" Foreground="White" FontSize="14" Click="Button_Click" BorderThickness="0" Cursor="Hand" IsEnabled="{Binding CanAdd}"/>
                     </Border>
                 </Grid>
-                <ScrollViewer Grid.Row="2" Margin="15 0 15 15">
-                    <ItemsControl ItemsSource="{Binding Tasks}">
-                        <ItemsControl.ItemsPanel>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button Click="Sort_Click" HorizontalAlignment="Right" Margin="0 0 20 0">
+                        <Image Source="{Binding SortSource}" Width="12" Height="12" SnapsToDevicePixels="True" ToolTip="{Binding SortToolTip}"/>
+                    </Button>
+                </Grid>
+                <ScrollViewer Grid.Row="3" Margin="15 10 15 15">
+                    <ListBox x:Name="TodoList" ItemsSource="{Binding Tasks}" BorderThickness="0" Background="Transparent">
+                        <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel/>
                             </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="10 5">
-                                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsEnabled}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
+                                <Grid Margin="10 0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border AllowDrop="True" PreviewMouseMove="TodoList_PreviewMouseMove" DragEnter="TodoList_DragEnter" Width="20" VerticalAlignment="Stretch" Margin="0 0 5 0" Background="Transparent" Cursor="Hand" Visibility="{Binding CanMove}">
+                                        <Image Source="Resources/Move.png" Width="16" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                    </Border>
+                                    <CheckBox Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" IsChecked="{Binding IsEnabled}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="0 5">
                                         <CheckBox.Template>
                                             <ControlTemplate TargetType="CheckBox">
                                                 <TextBlock x:Name="_content" Text="{Binding Content}" FontSize="14" Cursor="Hand" TextWrapping="Wrap"/>
@@ -66,8 +84,8 @@
                                     </CheckBox>
                                 </Grid>
                             </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </ScrollViewer>
             </Grid>
         </Grid>

@@ -78,11 +78,83 @@ namespace LToDo
             }
         }
 
-        private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void TodoList_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                var pos = e.GetPosition(TodoList);
+                HitTestResult result = VisualTreeHelper.HitTest(TodoList, pos);
+                if (result == null)
+                {
+                    return;
+                }
+                var listBoxItem = Utils.FindVisualParent<ListBoxItem>(result.VisualHit);
+                if (listBoxItem == null || listBoxItem.Content != TodoList.SelectedItem)
+                {
+                    return;
+                }
+                DataObject dataObj = new DataObject(listBoxItem.Content as TaskModel);
+                DragDrop.DoDragDrop(TodoList, dataObj, DragDropEffects.Move);
+            }
+        }
+
+        private void TodoList_Drop(object sender, DragEventArgs e)
+        {
+            
+        }
+
+        private void TodoList_DragEnter(object sender, DragEventArgs e)
+        {
+            var pos = e.GetPosition(TodoList);
+            var result = VisualTreeHelper.HitTest(TodoList, pos);
+            if (result == null)
+            {
+                return;
+            }
+            //查找元数据
+            var sourcePerson = e.Data.GetData(typeof(TaskModel)) as TaskModel;
+            if (sourcePerson == null)
+            {
+                return;
+            }
+            //查找目标数据
+            var listBoxItem = Utils.FindVisualParent<ListBoxItem>(result.VisualHit);
+            if (listBoxItem == null)
+            {
+                return;
+            }
+            var targetPerson = listBoxItem.Content as TaskModel;
+            if (ReferenceEquals(targetPerson, sourcePerson))
+            {
+                return;
+            }
+            _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(sourcePerson), _mainWindowViewModel.Tasks.IndexOf(targetPerson));
+        }
+
+        private void IsTopmost_Click(object sender, RoutedEventArgs e)
         {
             _mainWindowViewModel.Topmost = !_mainWindowViewModel.Topmost;
-            IsTopmost.Source = !_mainWindowViewModel.Topmost ? new BitmapImage(new Uri("/Top.png", UriKind.Relative)) : new BitmapImage(new Uri("/TopBlue.png", UriKind.Relative));
-            IsTopmost.ToolTip = !_mainWindowViewModel.Topmost ? "置顶" : "取消置顶";
+        }
+
+        private void Sort_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindowViewModel.Sort = !_mainWindowViewModel.Sort;
         }
     }
+    internal static class Utils
+    {
+        //根据子元素查找父元素
+        public static T FindVisualParent<T>(DependencyObject obj) where T : class
+        {
+            while (obj != null)
+            {
+                if (obj is T)
+                    return obj as T;
+
+                obj = VisualTreeHelper.GetParent(obj);
+            }
+            return null;
+        }
+    }
+
 }

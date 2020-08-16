@@ -11,7 +11,10 @@
 
   <ItemGroup>
     <None Remove="Logo.ico" />
+    <None Remove="Move.png" />
+    <None Remove="Resources\SortBlue.png" />
     <None Remove="Select.png" />
+    <None Remove="Sort.png" />
     <None Remove="Top.png" />
     <None Remove="TopBlue.png" />
   </ItemGroup>
@@ -22,13 +25,16 @@
 
   <ItemGroup>
     <Resource Include="Logo.ico" />
-    <Resource Include="Select.png">
+    <Resource Include="Resources\Move.png" />
+    <Resource Include="Resources\Select.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Top.png">
+    <Resource Include="Resources\Sort.png" />
+    <Resource Include="Resources\SortBlue.png" />
+    <Resource Include="Resources\Top.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="TopBlue.png">
+    <Resource Include="Resources\TopBlue.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
