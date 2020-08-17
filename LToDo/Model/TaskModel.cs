@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LToDo.Model;
+using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -9,6 +11,10 @@ namespace LToDo
 {
     public class TaskModel : ViewModelBase
     {
+        [PrimaryKey]
+        [AutoIncrement]
+        public Guid Id { get; set; }
+
         public bool IsSort;
 
         private int _number;
@@ -48,6 +54,7 @@ namespace LToDo
         /// <summary>
         /// 显示文本
         /// </summary>
+        [Ignore]
         public string Text
         {
             get
@@ -74,6 +81,7 @@ namespace LToDo
         }
 
         private Visibility _canMove = Visibility.Collapsed;
+        [Ignore]
         public Visibility CanMove
         {
             get
@@ -90,6 +98,7 @@ namespace LToDo
         /// <summary>
         /// 删除Todo
         /// </summary>
+        [Ignore]
         public ICommand DeleteCommand
         {
             get

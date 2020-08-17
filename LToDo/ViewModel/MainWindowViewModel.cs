@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LToDo.Database;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,7 +15,6 @@ namespace LToDo
     {
         public MainWindowViewModel()
         {
-            Tasks = new ObservableCollection<TaskModel>();
             var timer = new DispatcherTimer() { Interval = TimeSpan.FromDays(1) };
             timer.Tick += (sender, e) =>
             {
@@ -28,7 +28,7 @@ namespace LToDo
             Tasks.Where(x => x.IsEnabled).ToList().ForEach(x => x.Number = Tasks.IndexOf(x) + 1);
         }
 
-        private ObservableCollection<TaskModel> _tasks;
+        private ObservableCollection<TaskModel> _tasks = TaskManager.GetAllTasks();
         public ObservableCollection<TaskModel> Tasks
         {
             get { return _tasks; }
