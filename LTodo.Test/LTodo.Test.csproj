@@ -17,8 +17,4 @@
     <ProjectReference Include="..\LToDo\LToDo.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DesktopTest\" />
-  </ItemGroup>
-
 </Project>

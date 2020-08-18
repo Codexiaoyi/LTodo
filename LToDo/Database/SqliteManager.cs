@@ -55,6 +55,7 @@ namespace LToDo.Database
         public void DeleteDatabase()
         {
             db.DropTable<TaskModel>();
+            db.CreateTable<TaskModel>();
         }
     }
 }

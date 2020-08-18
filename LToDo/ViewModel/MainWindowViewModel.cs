@@ -25,7 +25,11 @@ namespace LToDo
 
         private void Tasks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            Tasks.Where(x => x.IsEnabled).ToList().ForEach(x => x.Number = Tasks.IndexOf(x) + 1);
+            Tasks.ToList().ForEach(x =>
+            {
+                x.Number = x.IsEnabled ? Tasks.IndexOf(x) + 1 : x.Number;
+                TaskManager.UpdateTask(x);
+            });
         }
 
         private ObservableCollection<TaskModel> _tasks = TaskManager.GetAllTasks();

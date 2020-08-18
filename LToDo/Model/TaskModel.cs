@@ -1,4 +1,5 @@
-﻿using LToDo.Model;
+﻿using LToDo.Database;
+using LToDo.Model;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,7 @@ namespace LToDo
     public class TaskModel : ViewModelBase
     {
         [PrimaryKey]
-        [AutoIncrement]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public bool IsSort;
 
@@ -110,6 +110,7 @@ namespace LToDo
                         if (App.Current.MainWindow is MainWindow mainWindow)
                         {
                             mainWindow._mainWindowViewModel.Tasks.Remove(this);
+                            TaskManager.RemoveTask(this);
                         }
                     }
                 };

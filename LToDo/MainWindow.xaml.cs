@@ -74,7 +74,9 @@ namespace LToDo
         {
             if (!string.IsNullOrEmpty(NewTask.Text))
             {
-                _mainWindowViewModel.Tasks.Insert(0, new TaskModel() { Content = NewTask.Text });
+                var newTask = new TaskModel() { Content = NewTask.Text };
+                _mainWindowViewModel.Tasks.Insert(0, newTask);
+                TaskManager.AddNewTask(_mainWindowViewModel.Tasks[0]);
                 NewTask.Text = string.Empty;
             }
         }
