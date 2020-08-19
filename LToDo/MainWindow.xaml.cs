@@ -103,7 +103,7 @@ namespace LToDo
 
         private void TodoList_Drop(object sender, DragEventArgs e)
         {
-
+            TaskManager.UpdateTasks(_mainWindowViewModel.Tasks.ToArray());
         }
 
         private void TodoList_DragEnter(object sender, DragEventArgs e)

@@ -28,7 +28,6 @@ namespace LToDo
             Tasks.ToList().ForEach(x =>
             {
                 x.Number = x.IsEnabled ? Tasks.IndexOf(x) + 1 : x.Number;
-                TaskManager.UpdateTask(x);
             });
         }
 

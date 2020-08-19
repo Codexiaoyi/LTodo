@@ -34,5 +34,10 @@ namespace LToDo.Database
         {
             return SqliteManager.Instance.Update(task);
         }
+
+        public static void UpdateTasks(TaskModel[] models)
+        {
+            SqliteManager.Instance.UpdateTransaction(models);
+        }
     }
 }

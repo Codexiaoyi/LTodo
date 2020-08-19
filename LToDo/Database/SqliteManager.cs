@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -23,7 +24,12 @@ namespace LToDo.Database
 
         private SqliteManager()
         {
-            db = new SQLiteConnection(Path.Combine(Application.UserAppDataPath, "LTodo.db"));
+            var baseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Assembly.GetExecutingAssembly().GetName().Name);
+            if (!Directory.Exists(baseFolder))
+            {
+                Directory.CreateDirectory(baseFolder);
+            }
+            db = new SQLiteConnection(Path.Combine(baseFolder, "LTodo.db"));
             db.CreateTable<TaskModel>();
         }
 
@@ -47,9 +53,14 @@ namespace LToDo.Database
             return db.Query<T>(sql);
         }
 
-        public int Execute(string sql)
+        public void UpdateTransaction<T>(T[] models)
         {
-            return db.Execute(sql);
+            db.BeginTransaction();
+            foreach (var model in models)
+            {
+                db.Update(model);
+            }
+            db.Commit();
         }
 
         public void DeleteDatabase()

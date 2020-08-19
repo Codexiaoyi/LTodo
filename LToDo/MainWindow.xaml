@@ -65,7 +65,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
-                                    <Border AllowDrop="True" PreviewMouseMove="TodoList_PreviewMouseMove" DragEnter="TodoList_DragEnter" Width="20" VerticalAlignment="Stretch" Margin="0 0 5 0" Background="Transparent" Cursor="Hand" Visibility="{Binding CanMove}">
+                                    <Border AllowDrop="True" PreviewMouseMove="TodoList_PreviewMouseMove" DragEnter="TodoList_DragEnter" Drop="TodoList_Drop" Width="20" VerticalAlignment="Stretch" Margin="0 0 5 0" Background="Transparent" Cursor="Hand" Visibility="{Binding CanMove}">
                                         <Image Source="Resources/Move.png" Width="16" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                     </Border>
                                     <CheckBox Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" IsChecked="{Binding IsEnabled}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="0 5">
