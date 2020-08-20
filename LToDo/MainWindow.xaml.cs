@@ -45,6 +45,7 @@ namespace LToDo
             if (data is TaskModel task)
             {
                 _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(task), 0);
+                TaskManager.UpdateTasks(_mainWindowViewModel.Tasks.ToArray());
             }
         }
 
@@ -54,6 +55,7 @@ namespace LToDo
             if (data is TaskModel task)
             {
                 _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(task), _mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count());
+                TaskManager.UpdateTasks(_mainWindowViewModel.Tasks.ToArray());
             }
         }
 

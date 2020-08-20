@@ -76,7 +76,7 @@
                                                         <ColumnDefinition />
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBlock x:Name="_content" Text="{Binding Text}" FontSize="14" Cursor="Hand" TextWrapping="Wrap" Padding="0 0 3 0"/>
+                                                    <local:LTextBlock x:Name="_content" LText="{Binding Text}" FontSize="14" Cursor="Hand" TextWrapping="Wrap" Padding="0 0 3 0"/>
                                                     <Button x:Name="_delete" Grid.Column="1" Width="14" VerticalAlignment="Center" HorizontalAlignment="Right" ToolTip="删除" Visibility="Collapsed" Command="{Binding DeleteCommand}">
                                                         <Image Source="Resources/Delete.png" Width="14" Height="14"/>
                                                     </Button>

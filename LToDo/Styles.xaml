@@ -34,6 +34,14 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <!--超链接样式-->
+    <Style TargetType="Hyperlink">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="Gray"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
     <!--滚动条样式-->
     <!-- ScrollViewer 滚动条 -->
     <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
