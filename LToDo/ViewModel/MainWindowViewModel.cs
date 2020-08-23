@@ -28,12 +28,11 @@ namespace LToDo
             Tasks.ToList().ForEach(x =>
             {
                 x.Number = x.IsEnabled ? Tasks.IndexOf(x) + 1 : x.Number;
+                if (!Sort)
+                {
+                    TaskManager.UpdateTask(x);
+                }
             });
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add || e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
-            {
-                //防止排序过分频繁移动，只有添加或删除可以直接刷新数据
-                TaskManager.UpdateTasks(Tasks.ToArray());
-            }
         }
 
         private ObservableCollection<TaskModel> _tasks = TaskManager.GetAllTasks();

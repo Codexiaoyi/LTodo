@@ -29,11 +29,6 @@ namespace LToDo
             DataContext = _mainWindowViewModel;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
@@ -45,7 +40,6 @@ namespace LToDo
             if (data is TaskModel task)
             {
                 _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(task), 0);
-                TaskManager.UpdateTasks(_mainWindowViewModel.Tasks.ToArray());
             }
         }
 
@@ -55,7 +49,6 @@ namespace LToDo
             if (data is TaskModel task)
             {
                 _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(task), _mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count());
-                TaskManager.UpdateTasks(_mainWindowViewModel.Tasks.ToArray());
             }
         }
 

@@ -6,8 +6,7 @@
         xmlns:local="clr-namespace:LToDo" Icon="Logo.ico"
         AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize"
         mc:Ignorable="d" Background="Transparent" Topmost="{Binding Topmost}"
-        Title="MainWindow" Height="420" Width="320"
-        Loaded="Window_Loaded" ShowInTaskbar="False">
+        Title="MainWindow" Height="420" Width="320" ShowInTaskbar="False">
     <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderThickness="0" CornerRadius="10">
         <Border.Effect>
             <DropShadowEffect ShadowDepth="0" Color="LightGray" Opacity="0.7" BlurRadius="15"/>
