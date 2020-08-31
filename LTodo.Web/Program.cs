@@ -20,7 +20,7 @@ namespace LTodo.Web
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>().UseUrls("http://*:6666");
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }

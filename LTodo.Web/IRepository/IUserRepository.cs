@@ -8,6 +8,7 @@ namespace LTodo.Web.IRepository
 {
     public interface IUserRepository
     {
-        Task<bool> LoginAsync(UserModel user);
+        Task<UserModel> QueryByEmailAsync(string email);
+        Task<int> AddAsync(UserModel user);
     }
 }

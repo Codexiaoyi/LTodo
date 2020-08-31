@@ -17,10 +17,15 @@ namespace LTodo.Web.Repository
             _lDbContext = lDbContext;
         }
 
-        public async Task<bool> LoginAsync(UserModel user)
+        public async Task<int> AddAsync(UserModel user)
         {
-            var result = await _lDbContext.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
-            return result != null;
+            await _lDbContext.Users.AddAsync(user);
+            return await _lDbContext.SaveChangesAsync();
+        }
+
+        public async Task<UserModel> QueryByEmailAsync(string email)
+        {
+            return await _lDbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
         }
     }
 }

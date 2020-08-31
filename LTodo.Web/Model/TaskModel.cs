@@ -7,6 +7,11 @@ namespace LTodo.Web.Model
 {
     public class TaskModel
     {
+        public TaskModel()
+        {
+            Id = string.IsNullOrEmpty(Id) ? Guid.NewGuid().ToString() : Id;
+        }
+
         public string Id { get; set; }
 
         public string UserId { get; set; }

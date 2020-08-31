@@ -8,6 +8,11 @@ namespace LTodo.Web.Model
 {
     public class UserModel
     {
+        public UserModel()
+        {
+            Id = string.IsNullOrEmpty(Id) ? Guid.NewGuid().ToString() : Id;
+        }
+
         public string Id { get; set; }
 
         [EmailAddress]
