@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace LTodo.Web.Model
 {
-    public class ResponseViewModel
+    public class ResponseDto
     {
         public int Code { get; set; }
         public string Message { get; set; }

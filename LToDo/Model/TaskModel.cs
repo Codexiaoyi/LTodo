@@ -1,5 +1,4 @@
 ﻿using LToDo.Database;
-using LToDo.Model;
 using SQLite;
 using System;
 using System.Collections.Generic;

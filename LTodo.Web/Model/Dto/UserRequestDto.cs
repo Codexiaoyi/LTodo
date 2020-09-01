@@ -4,22 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LTodo.Web.Model
+namespace LTodo.Web.Model.Dto
 {
-    public class UserModel
+    public class UserRequestDto
     {
-        public UserModel()
-        {
-            Id = string.IsNullOrEmpty(Id) ? Guid.NewGuid().ToString() : Id;
-        }
-
-        public string Id { get; set; }
-
         [EmailAddress]
         public string Email { get; set; }
 
         public string Password { get; set; }
-
-        public int Level { get; set; } = 1;
     }
 }
