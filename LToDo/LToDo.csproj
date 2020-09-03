@@ -14,7 +14,12 @@
     <None Remove="Logo.ico" />
     <None Remove="Move.png" />
     <None Remove="Resources\Delete.png" />
-    <None Remove="Resources\SortBlue.png" />
+    <None Remove="Resources\Edit.png" />
+    <None Remove="Resources\Enlarge.png" />
+    <None Remove="Resources\Item.png" />
+    <None Remove="Resources\NoContent.png" />
+    <None Remove="Resources\TopMost.png" />
+    <None Remove="Resources\TopMostBlue.png" />
     <None Remove="Select.png" />
     <None Remove="Sort.png" />
     <None Remove="Top.png" />
@@ -29,18 +34,22 @@
   <ItemGroup>
     <Resource Include="Logo.ico" />
     <Resource Include="Resources\Delete.png" />
+    <Resource Include="Resources\Edit.png" />
+    <Resource Include="Resources\Enlarge.png" />
+    <Resource Include="Resources\Item.png" />
     <Resource Include="Resources\Move.png" />
+    <Resource Include="Resources\NoContent.png" />
     <Resource Include="Resources\Select.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Sort.png" />
-    <Resource Include="Resources\SortBlue.png" />
     <Resource Include="Resources\Top.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\TopBlue.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\TopMost.png" />
+    <Resource Include="Resources\TopMostBlue.png" />
   </ItemGroup>
 
 </Project>

@@ -20,6 +20,7 @@ namespace LToDo
             {
                 Time = DateTime.Now.ToLongDateString().ToString();
             };
+            HasTodo = Tasks.Count > 0;
             Tasks.CollectionChanged += Tasks_CollectionChanged;
         }
 
@@ -28,18 +29,27 @@ namespace LToDo
             Tasks.ToList().ForEach(x =>
             {
                 x.Number = x.IsEnabled ? Tasks.IndexOf(x) + 1 : x.Number;
-                if (!Sort)
+                if (!Edit)
                 {
                     TaskManager.UpdateTask(x);
                 }
             });
+            if (e.Action != System.Collections.Specialized.NotifyCollectionChangedAction.Move)
+            {
+                HasTodo = Tasks.Count <= 0 ? false : true;
+                PropertyChange(nameof(HasTodo));
+            }
         }
 
         private ObservableCollection<TaskModel> _tasks = TaskManager.GetAllTasks();
         public ObservableCollection<TaskModel> Tasks
         {
             get { return _tasks; }
-            set { _tasks = value; PropertyChange(nameof(Tasks)); }
+            set
+            {
+                _tasks = value;
+                PropertyChange(nameof(Tasks));
+            }
         }
 
         private string _time = DateTime.Now.ToLongDateString().ToString();
@@ -49,6 +59,11 @@ namespace LToDo
             set { _time = value; PropertyChange(nameof(Time)); }
         }
 
+        /// <summary>
+        /// 是否有Todo项
+        /// </summary>
+        public bool HasTodo { get; set; }
+
         #region 置顶
         private bool _topmost = false;
         public bool Topmost
@@ -57,41 +72,41 @@ namespace LToDo
             set
             {
                 _topmost = value;
-                TopmostSource = !_topmost ? new BitmapImage(new Uri("Resources/Top.png", UriKind.Relative)) : new BitmapImage(new Uri("Resources/TopBlue.png", UriKind.Relative));
+                TopmostSource = !_topmost ? new BitmapImage(new Uri("Resources/TopMost.png", UriKind.Relative)) : new BitmapImage(new Uri("Resources/TopMostBlue.png", UriKind.Relative));
                 TopmostToolTip = !_topmost ? "置顶" : "取消置顶";
                 PropertyChange(nameof(Topmost));
                 PropertyChange(nameof(TopmostSource));
                 PropertyChange(nameof(TopmostToolTip));
             }
         }
-        public BitmapImage TopmostSource { get; set; } = new BitmapImage(new Uri("Resources/Top.png", UriKind.Relative));
+        public BitmapImage TopmostSource { get; set; } = new BitmapImage(new Uri("Resources/TopMost.png", UriKind.Relative));
         public string TopmostToolTip { get; set; } = "置顶";
         #endregion
 
-        #region 排序
-        private bool _sort = false;
-        public bool Sort
+        #region 编辑
+        private bool _edit = false;
+        public bool Edit
         {
-            get { return _sort; }
+            get { return _edit; }
             set
             {
-                _sort = value;
-                SortSource = !_sort ? new BitmapImage(new Uri("Resources/Sort.png", UriKind.Relative)) : new BitmapImage(new Uri("Resources/SortBlue.png", UriKind.Relative));
-                SortToolTip = !_sort ? "排序" : "完成排序";
-                CanAdd = !_sort ? true : false;
+                _edit = value;
+                EditToolTip = !Edit ? "编辑" : "取消编辑";
+                ListName = !Edit ? "清单列表" : "拖动可排序";
+                CanAdd = !Edit ? true : false;
                 Tasks.ToList().ForEach(x =>
                 {
-                    x.CanMove = x.IsEnabled ? !_sort ? Visibility.Collapsed : Visibility.Visible : x.CanMove;
-                    x.IsSort = _sort;
+                    x.CanMove = x.IsEnabled ? !Edit ? Visibility.Collapsed : Visibility.Visible : x.CanMove;
+                    x.IsEdit = Edit;
                 });
                 PropertyChange(nameof(CanAdd));
-                PropertyChange(nameof(Sort));
-                PropertyChange(nameof(SortSource));
-                PropertyChange(nameof(SortToolTip));
+                PropertyChange(nameof(Edit));
+                PropertyChange(nameof(ListName));
+                PropertyChange(nameof(EditToolTip));
             }
         }
-        public BitmapImage SortSource { get; set; } = new BitmapImage(new Uri("Resources/Sort.png", UriKind.Relative));
-        public string SortToolTip { get; set; } = "排序";
+        public string EditToolTip { get; set; } = "编辑";
+        public string ListName { get; set; } = "清单列表";
         public bool CanAdd { get; set; } = true;
         #endregion
 

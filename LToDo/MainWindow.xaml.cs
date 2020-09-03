@@ -52,11 +52,6 @@ namespace LToDo
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            AddNewTask();
-        }
-
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -134,9 +129,9 @@ namespace LToDo
             _mainWindowViewModel.Topmost = !_mainWindowViewModel.Topmost;
         }
 
-        private void Sort_Click(object sender, RoutedEventArgs e)
+        private void Edit_Click(object sender, RoutedEventArgs e)
         {
-            _mainWindowViewModel.Sort = !_mainWindowViewModel.Sort;
+            _mainWindowViewModel.Edit = !_mainWindowViewModel.Edit;
         }
     }
     internal static class Utils

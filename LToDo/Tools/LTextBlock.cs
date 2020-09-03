@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -110,10 +111,10 @@ namespace LToDo
             {
                 Hyperlink link = new Hyperlink();
                 link.Tag = value;
-                link.IsEnabled = false;
+                //link.IsEnabled = false;
                 link.Click += link_Click;
-                link.MouseEnter += Link_MouseEnter;
-                link.MouseLeave += Link_MouseLeave;
+                //link.MouseEnter += Link_MouseEnter;
+                //link.MouseLeave += Link_MouseLeave;
                 link.Inlines.Add(new Run() { Text = value });
                 this.Inlines.Add(link);
             }
@@ -148,9 +149,9 @@ namespace LToDo
 
         private void link_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Hyperlink link)
+            if (sender is Hyperlink link && link.DataContext is TaskModel task && App.Current.MainWindow is MainWindow window)
             {
-                if (Keyboard.Modifiers == ModifierKeys.Control)
+                if (task.IsEnabled && Keyboard.Modifiers == ModifierKeys.Control)
                 {
                     Process p = new Process();
                     p.StartInfo.FileName = "cmd.exe";
@@ -166,6 +167,19 @@ namespace LToDo
                     p.StandardInput.AutoFlush = true;
                     p.WaitForExit();//等待程序执行完退出进程
                     p.Close();
+                    return;
+                }
+                if (task.IsEnabled)
+                {
+                    link.Foreground = System.Windows.Media.Brushes.Gray;
+                    task.IsEnabled = !task.IsEnabled;
+                    window._mainWindowViewModel.Tasks.Move(window._mainWindowViewModel.Tasks.IndexOf(task), window._mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count());
+                }
+                else
+                {
+                    link.Foreground = System.Windows.Media.Brushes.White;
+                    task.IsEnabled = !task.IsEnabled;
+                    window._mainWindowViewModel.Tasks.Move(window._mainWindowViewModel.Tasks.IndexOf(task), 0);
                 }
             }
         }

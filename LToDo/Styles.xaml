@@ -3,18 +3,17 @@
                     xmlns:local="clr-namespace:LToDo">
     <!--输入框样式-->
     <Style TargetType="{x:Type TextBox}">
-        <Style.Resources>
-            <Style TargetType="{x:Type Border}">
-                <Setter Property="CornerRadius" Value="5"/>
-            </Style>
-        </Style.Resources>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Background" Value="Gray"/>
-        <Setter Property="Opacity" Value="0.8"/>
-        <Setter Property="CaretBrush" Value="White"/>
-        <Setter Property="Padding" Value="10 4"/>
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="Padding" Value="10 0"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Foreground" Value="AntiqueWhite"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{x:Null}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
     </Style>
     <!--按钮默认样式-->
     <Style TargetType="Button">
@@ -276,22 +275,38 @@
         </Setter>
     </Style>
     <!--默认ScrollBar-->
-    <Style TargetType="ScrollBar" BasedOn="{StaticResource for_scrollbar}"/>
+    <Style x:Key="LScrollBar" TargetType="ScrollBar" BasedOn="{StaticResource for_scrollbar}"/>
     <!--默认ScrollView-->
-    <Style TargetType="ScrollViewer" BasedOn="{StaticResource for_scrollviewer}"/>
+    <Style x:Key="LScrollViewer" TargetType="ScrollViewer" BasedOn="{StaticResource for_scrollviewer}"/>
     <!--ListBox默认Style-->
     <Style TargetType="{x:Type ListBox}">
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
-        <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
         <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
         <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBox}">
+                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="1" SnapsToDevicePixels="true">
+                        <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" Style="{StaticResource LScrollViewer}">
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style x:Key="FocusVisual">
         <Setter Property="Control.Template">

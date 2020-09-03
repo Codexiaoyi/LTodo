@@ -15,7 +15,7 @@ namespace LToDo
         [PrimaryKey]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public bool IsSort;
+        public bool IsEdit;
 
         private int _number;
         /// <summary>
@@ -74,7 +74,7 @@ namespace LToDo
             set
             {
                 _isEnabled = value;
-                CanMove = _isEnabled ? IsSort ? Visibility.Visible : CanMove : Visibility.Collapsed;
+                CanMove = _isEnabled ? IsEdit ? Visibility.Visible : CanMove : Visibility.Collapsed;
                 Number = _isEnabled ? Number : 0;
                 PropertyChange(nameof(IsEnabled));
             }
