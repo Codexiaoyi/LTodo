@@ -30,7 +30,7 @@ namespace LToDo
             set
             {
                 _number = value;
-                PropertyChange(nameof(Text));
+                PropertyChange(nameof(Number));
             }
         }
 
@@ -47,20 +47,7 @@ namespace LToDo
             set
             {
                 _content = value;
-                PropertyChange(nameof(Text));
-            }
-        }
-
-        /// <summary>
-        /// 显示文本
-        /// </summary>
-        [Ignore]
-        public string Text
-        {
-            get
-            {
-                var p = string.IsNullOrEmpty(Number.ToString()) || Number == 0 ? string.Empty : $"{Number}、";
-                return $"{p}{_content}";
+                PropertyChange(nameof(Content));
             }
         }
 

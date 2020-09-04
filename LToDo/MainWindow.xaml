@@ -6,9 +6,26 @@
         xmlns:local="clr-namespace:LToDo" Icon="Logo.ico"
         AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize"
         mc:Ignorable="d" Background="Transparent" Topmost="{Binding Topmost}"
-        Title="MainWindow" Height="420" Width="320" ShowInTaskbar="False">
+        Height="420" Width="320" ShowInTaskbar="False">
     <Window.Resources>
+        <local:BoolenConverter x:Key="BoolenConverter"/>
         <local:HasTodoToVisibilityConverter x:Key="HasToDoToVisibilityConverter"/>
+        <Storyboard x:Key="EditVisible">
+            <DoubleAnimation Storyboard.TargetName="_edit" Storyboard.TargetProperty="Height" From="0" To="32" Duration="00:00:0.3"/>
+            <DoubleAnimation Storyboard.TargetName="_editSpace" Storyboard.TargetProperty="Height" From="0" To="32" Duration="00:00:0.3"/>
+            <ThicknessAnimation Storyboard.TargetName="_editSpace" Storyboard.TargetProperty="Margin" From="18 0" To="18 12 18 0" Duration="00:00:0.3"/>
+        </Storyboard>
+        <Storyboard x:Key="EditCollapsed">
+            <DoubleAnimation Storyboard.TargetName="_edit" Storyboard.TargetProperty="Height" From="32" To="0" Duration="00:00:0.3"/>
+            <DoubleAnimation Storyboard.TargetName="_editSpace" Storyboard.TargetProperty="Height" From="32" To="0" Duration="00:00:0.3"/>
+            <ThicknessAnimation Storyboard.TargetName="_editSpace" Storyboard.TargetProperty="Margin" From="18 12 18 0" To="18 0" Duration="00:00:0.3"/>
+        </Storyboard>
+        <Storyboard x:Key="EnlargeInput">
+            <DoubleAnimation Storyboard.TargetName="_edit" Storyboard.TargetProperty="Height" From="32" To="200" Duration="00:00:0.3"/>
+        </Storyboard>
+        <Storyboard x:Key="ReduceInput">
+            <DoubleAnimation Storyboard.TargetName="_edit" Storyboard.TargetProperty="Height" From="200" To="32" Duration="00:00:0.3"/>
+        </Storyboard>
     </Window.Resources>
     <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderThickness="0" CornerRadius="10" Margin="10">
         <Border.Effect>
@@ -18,7 +35,7 @@
             <Grid.Clip>
                 <RectangleGeometry Rect="0,0,300,400" RadiusX="10" RadiusY="10"/>
             </Grid.Clip>
-            <Border Background="Black" Opacity="0.7" BorderThickness="1" BorderBrush="Gray" CornerRadius="10" MouseLeftButtonDown="Border_MouseLeftButtonDown"/>
+            <Border Background="{StaticResource Black}" Opacity="0.7" BorderThickness="1" BorderBrush="{StaticResource Gray}" CornerRadius="10" MouseLeftButtonDown="Border_MouseLeftButtonDown"/>
             <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -31,22 +48,108 @@
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding Time}" Foreground="White" FontSize="14" IsHitTestVisible="False"/>
-                    <Button Grid.Column="1" Click="IsTopmost_Click">
+                    <TextBlock Text="{Binding Time}" Foreground="{StaticResource White}" FontSize="14" IsHitTestVisible="False"/>
+                    <Button Grid.Column="1" Click="IsTopmost_Click" Cursor="Hand">
                         <Image Source="{Binding TopmostSource}" Height="14" Width="14" SnapsToDevicePixels="True" ToolTip="{Binding TopmostToolTip}"/>
                     </Button>
                 </Grid>
-                <Border Grid.Row="1" Margin="18 12 18 0" Height="32" Background="DarkGray" CornerRadius="7" Opacity="0.5"/>
-                <Grid Grid.Row="1" Margin="18 12 18 0" Height="32">
+                <Grid x:Name="_editSpace" Grid.Row="1" Margin="18 12 18 0" Height="32"/>
+                <Grid Grid.Row="2" Margin="28 12 28 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding ListName}" Foreground="{StaticResource DarkWhite}" FontSize="14"/>
+                    <Button Grid.Column="1" Click="Edit_Click" HorizontalAlignment="Right">
+                        <Image Source="Resources/Edit.png" Width="14" Height="14" SnapsToDevicePixels="True" ToolTip="{Binding EditToolTip}"/>
+                    </Button>
+                    <Border x:Name="_editEnd" Grid.Column="1" HorizontalAlignment="Right" Background="{StaticResource Blue}" CornerRadius="3" Visibility="Collapsed">
+                        <Button Click="Edit_Click" Content="完成" Margin="5 0" Foreground="{StaticResource White}" FontSize="12" Cursor="Hand"/>
+                    </Border>
+                </Grid>
+                <StackPanel Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Visibility="{Binding HasTodo,Converter={StaticResource HasToDoToVisibilityConverter},ConverterParameter=Background}">
+                    <Image Source="Resources/NoContent.png" Width="128" Height="95"/>
+                    <TextBlock Text="暂无内容" FontSize="16" Foreground="{StaticResource White}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 8 0 0"/>
+                </StackPanel>
+                <ListBox x:Name="_todoList" Grid.Row="3" Margin="15 0 15 12" ItemsSource="{Binding Tasks}" BorderThickness="0" Background="Transparent" Visibility="{Binding HasTodo,Converter={StaticResource HasToDoToVisibilityConverter},ConverterParameter=ListBox}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch">
+                                <Border x:Name="_background" Background="{StaticResource DarkGray}" CornerRadius="5" Margin="2 6" Opacity="0.3"/>
+                                <Border x:Name="_text" Margin="2 6">
+                                    <CheckBox VerticalAlignment="Center" HorizontalAlignment="Stretch" IsChecked="{Binding IsEnabled}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="10 6">
+                                        <CheckBox.Template>
+                                            <ControlTemplate TargetType="CheckBox">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <local:LTextBlock x:Name="_content" LText="{Binding Content}" FontSize="14" Cursor="Hand" TextWrapping="Wrap" Padding="0 0 3 0"/>
+
+                                                </Grid>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsChecked" Value="False">
+                                                        <Setter TargetName="_content" Property="TextDecorations" Value="Strikethrough"/>
+                                                        <Setter TargetName="_content" Property="Foreground" Value="{StaticResource DarkGray}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="_content" Property="Foreground" Value="{StaticResource White}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </CheckBox.Template>
+                                    </CheckBox>
+                                </Border>
+                                <Border x:Name="_delete" Width="0" Background="{StaticResource DarkBlack}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Margin="2 6" CornerRadius="0 5 5 0" Opacity="0.6" Visibility="Collapsed">
+                                    <Button Command="{Binding DeleteCommand}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                        <Image Source="Resources/Delete.png" Width="14" Height="14"/>
+                                    </Button>
+                                </Border>
+                                <Border x:Name="_move" AllowDrop="True" PreviewMouseMove="TodoList_PreviewMouseMove" DragEnter="TodoList_DragEnter" Drop="TodoList_Drop" VerticalAlignment="Stretch" Margin="0 0 5 0" Background="Transparent" Cursor="Hand" HorizontalAlignment="Stretch" Visibility="{Binding CanMove}"/>
+                            </Grid>
+                            <DataTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="_delete" Property="Visibility" Value="Visible"/>
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="_delete" Storyboard.TargetProperty="Width" From="0" To="44" Duration="0:0:0.4"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                </Trigger>
+                                <EventTrigger SourceName="_move" RoutedEvent="DragEnter">
+                                    <EventTrigger.Actions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ThicknessAnimation Storyboard.TargetName="_background" Storyboard.TargetProperty="Margin" From="2,6" To="2,0" Duration="0:0:0.3"/>
+                                                <ThicknessAnimation Storyboard.TargetName="_background" Storyboard.TargetProperty="Margin" From="2,0" To="2,6" Duration="0:0:0.2" BeginTime="0:0:0.25"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger.Actions>
+                                </EventTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            <Grid x:Name="_edit" Margin="24 46 24 0" Height="32" VerticalAlignment="Top">
+                <Border Background="{StaticResource DarkGray}" CornerRadius="7" Opacity="{Binding IsMultiInput,Converter={StaticResource BoolenConverter},ConverterParameter=Opacity}"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="NewTask" IsEnabled="{Binding CanAdd}" VerticalAlignment="Center" AcceptsReturn="False" AcceptsTab="False" KeyUp="TextBox_KeyUp">
+                    <TextBox x:Name="_newTask" VerticalAlignment="Top" Margin="0,6,0,0" TextWrapping="{Binding IsMultiInput,Converter={StaticResource BoolenConverter},ConverterParameter=TextWrapping}" AcceptsReturn="{Binding IsMultiInput,Converter={StaticResource BoolenConverter},ConverterParameter=AcceptsReturn}" KeyUp="TextBox_KeyUp">
                         <TextBox.Resources>
-                            <VisualBrush x:Key="HintText" TileMode="None" Stretch="None" AlignmentX="Left" >
+                            <VisualBrush x:Key="HintText" TileMode="None" Stretch="None" AlignmentX="Left">
                                 <VisualBrush.Visual>
-                                    <TextBlock Text="添加你的Todo项" FontSize="13" Foreground="#EEEEEE" Opacity="0.7"/>
+                                    <TextBlock Text="添加你的Todo项" FontSize="13" Foreground="{StaticResource DarkWhite}" Opacity="0.7"/>
                                 </VisualBrush.Visual>
                                 <VisualBrush.Transform>
                                     <TranslateTransform X="12"/>
@@ -66,69 +169,18 @@
                             </Style>
                         </TextBox.Style>
                     </TextBox>
-                    <Button Grid.Column="1" Margin="0 0 12 0" Height="14" Width="14" IsEnabled="{Binding CanAdd}">
+                    <Button Grid.Column="1" Margin="0 0 12 0" Height="14" Width="14" ToolTip="多行添加" Visibility="{Binding IsMultiInput,Converter={StaticResource BoolenConverter},ConverterParameter=EnlargeVisibility}" Click="Enlarge_Click" Cursor="Hand">
                         <Image Height="14" Width="14" Source="Resources/Enlarge.png"/>
                     </Button>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" Margin="0,5,10,5" Visibility="{Binding IsMultiInput,Converter={StaticResource BoolenConverter},ConverterParameter=ButtonVisibility}">
+                        <Border Background="{StaticResource Gray}" CornerRadius="3" Margin="0,0,10,0">
+                            <Button Click="Cancel_Click" Content="取消" Margin="8 2" Foreground="{StaticResource White}" FontSize="12" Cursor="Hand"/>
+                        </Border>
+                        <Border Background="{StaticResource Blue}" CornerRadius="3">
+                            <Button Click="Save_Click" Content="保存" Margin="8 2" Foreground="{StaticResource White}" FontSize="12" Cursor="Hand"/>
+                        </Border>
+                    </StackPanel>
                 </Grid>
-                <Grid Grid.Row="2" Margin="28 12 28 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding ListName}" Foreground="#EEEEEE" FontSize="14"/>
-                    <Button Grid.Column="1" Click="Edit_Click" HorizontalAlignment="Right">
-                        <Image Source="Resources/Edit.png" Width="14" Height="14" SnapsToDevicePixels="True" ToolTip="{Binding EditToolTip}"/>
-                    </Button>
-                </Grid>
-                <StackPanel Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Visibility="{Binding HasTodo,Converter={StaticResource HasToDoToVisibilityConverter},ConverterParameter=Background}">
-                    <Image Source="Resources/NoContent.png" Width="128" Height="95"/>
-                    <TextBlock Text="暂无内容" FontSize="16" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 8 0 0"/>
-                </StackPanel>
-                <ListBox x:Name="TodoList" Grid.Row="3" Margin="15 0 15 12" ItemsSource="{Binding Tasks}" BorderThickness="0" Background="Transparent" Visibility="{Binding HasTodo,Converter={StaticResource HasToDoToVisibilityConverter},ConverterParameter=ListBox}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid HorizontalAlignment="Stretch">
-                                <Border Background="DarkGray" CornerRadius="5" Margin="2 6" Opacity="0.6"/>
-                                <Border CornerRadius="5" Margin="2 6">
-                                    <CheckBox VerticalAlignment="Center" HorizontalAlignment="Stretch" IsChecked="{Binding IsEnabled}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="10 6">
-                                        <CheckBox.Template>
-                                            <ControlTemplate TargetType="CheckBox">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition />
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <local:LTextBlock x:Name="_content" LText="{Binding Text}" FontSize="14" Cursor="Hand" TextWrapping="Wrap" Padding="0 0 3 0"/>
-                                                    
-                                                </Grid>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsChecked" Value="False">
-                                                        <Setter TargetName="_content" Property="TextDecorations" Value="Strikethrough"/>
-                                                        <Setter TargetName="_content" Property="Foreground" Value="DarkGray"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsChecked" Value="True">
-                                                        <Setter TargetName="_content" Property="Foreground" Value="White"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </CheckBox.Template>
-                                    </CheckBox>
-                                </Border>
-                                <Border x:Name="_delete" Width="44" Background="#111111" VerticalAlignment="Stretch" HorizontalAlignment="Right" Margin="2 6" CornerRadius="0 5 5 0" Opacity="0.7" Visibility="Collapsed">
-                                    <Button Command="{Binding DeleteCommand}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                        <Image Source="Resources/Delete.png" Width="14" Height="14"/>
-                                    </Button>
-                                </Border>
-                                <Border AllowDrop="True" PreviewMouseMove="TodoList_PreviewMouseMove" DragEnter="TodoList_DragEnter" Drop="TodoList_Drop" VerticalAlignment="Stretch" Margin="0 0 5 0" Background="Transparent" Cursor="Hand" HorizontalAlignment="Stretch" Visibility="{Binding CanMove}"/>
-                            </Grid>
-                            <DataTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="_delete" Property="Visibility" Value="Visible"/>
-                                </Trigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
             </Grid>
         </Grid>
     </Border>

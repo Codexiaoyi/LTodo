@@ -64,6 +64,16 @@ namespace LToDo
         /// </summary>
         public bool HasTodo { get; set; }
 
+        private bool _isMultiInput;
+        /// <summary>
+        /// 是否多行输入框
+        /// </summary>
+        public bool IsMultiInput
+        {
+            get { return _isMultiInput; }
+            set { _isMultiInput = value; PropertyChange(nameof(IsMultiInput)); }
+        }
+
         #region 置顶
         private bool _topmost = false;
         public bool Topmost
@@ -93,13 +103,11 @@ namespace LToDo
                 _edit = value;
                 EditToolTip = !Edit ? "编辑" : "取消编辑";
                 ListName = !Edit ? "清单列表" : "拖动可排序";
-                CanAdd = !Edit ? true : false;
                 Tasks.ToList().ForEach(x =>
                 {
                     x.CanMove = x.IsEnabled ? !Edit ? Visibility.Collapsed : Visibility.Visible : x.CanMove;
                     x.IsEdit = Edit;
                 });
-                PropertyChange(nameof(CanAdd));
                 PropertyChange(nameof(Edit));
                 PropertyChange(nameof(ListName));
                 PropertyChange(nameof(EditToolTip));
@@ -107,7 +115,6 @@ namespace LToDo
         }
         public string EditToolTip { get; set; } = "编辑";
         public string ListName { get; set; } = "清单列表";
-        public bool CanAdd { get; set; } = true;
         #endregion
 
     }

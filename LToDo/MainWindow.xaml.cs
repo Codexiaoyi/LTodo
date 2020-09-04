@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -39,7 +40,7 @@ namespace LToDo
             var data = (sender as FrameworkElement).DataContext;
             if (data is TaskModel task)
             {
-                _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(task), 0);
+                _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(task), _mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count() - 1);
             }
         }
 
@@ -54,7 +55,7 @@ namespace LToDo
 
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.Enter && !_mainWindowViewModel.IsMultiInput)
             {
                 AddNewTask();
             }
@@ -62,32 +63,94 @@ namespace LToDo
 
         public void AddNewTask()
         {
-            if (!string.IsNullOrEmpty(NewTask.Text))
+            if (!string.IsNullOrEmpty(_newTask.Text))
             {
-                var newTask = new TaskModel() { Content = NewTask.Text };
-                _mainWindowViewModel.Tasks.Insert(0, newTask);
-                TaskManager.AddNewTask(_mainWindowViewModel.Tasks[0]);
-                NewTask.Text = string.Empty;
+                var newTask = new TaskModel() { Content = _newTask.Text };
+                var lastIndex = _mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count();
+                _mainWindowViewModel.Tasks.Insert(lastIndex, newTask);
+                TaskManager.AddNewTask(_mainWindowViewModel.Tasks[lastIndex]);
+                _newTask.Text = string.Empty;
             }
+        }
+
+        private void IsTopmost_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindowViewModel.Topmost = !_mainWindowViewModel.Topmost;
+        }
+
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindowViewModel.Edit = !_mainWindowViewModel.Edit;
+            if (!_mainWindowViewModel.Edit)
+            {
+                //从无到有
+                var slideCollapsed = Resources["EditVisible"] as Storyboard;
+                slideCollapsed?.Begin((sender as FrameworkElement));
+                _editEnd.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                //从有到无
+                var slideVisible = Resources["EditCollapsed"] as Storyboard;
+                slideVisible?.Begin((sender as FrameworkElement));
+                _editEnd.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void Enlarge_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeInputSize((sender as FrameworkElement));
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            AddNewTask();
+            ChangeInputSize((sender as FrameworkElement));
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeInputSize((sender as FrameworkElement));
+        }
+
+        /// <summary>
+        /// 改变输入框大小
+        /// </summary>
+        private void ChangeInputSize(FrameworkElement element)
+        {
+            _mainWindowViewModel.IsMultiInput = !_mainWindowViewModel.IsMultiInput;
+            if (_mainWindowViewModel.IsMultiInput)
+            {
+                //变大
+                var slideEnlarge = Resources["EnlargeInput"] as Storyboard;
+                slideEnlarge?.Begin(element);
+            }
+            else
+            {
+                //变小
+                var slideReduce = Resources["ReduceInput"] as Storyboard;
+                slideReduce?.Begin(element);
+            }
+            _newTask.Focus();
         }
 
         private void TodoList_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                var pos = e.GetPosition(TodoList);
-                HitTestResult result = VisualTreeHelper.HitTest(TodoList, pos);
+                var pos = e.GetPosition(_todoList);
+                HitTestResult result = VisualTreeHelper.HitTest(_todoList, pos);
                 if (result == null)
                 {
                     return;
                 }
                 var listBoxItem = Utils.FindVisualParent<ListBoxItem>(result.VisualHit);
-                if (listBoxItem == null || listBoxItem.Content != TodoList.SelectedItem)
+                if (listBoxItem == null || listBoxItem.Content != _todoList.SelectedItem)
                 {
                     return;
                 }
                 DataObject dataObj = new DataObject(listBoxItem.Content as TaskModel);
-                DragDrop.DoDragDrop(TodoList, dataObj, DragDropEffects.Move);
+                DragDrop.DoDragDrop(_todoList, dataObj, DragDropEffects.Move);
             }
         }
 
@@ -98,8 +161,8 @@ namespace LToDo
 
         private void TodoList_DragEnter(object sender, DragEventArgs e)
         {
-            var pos = e.GetPosition(TodoList);
-            var result = VisualTreeHelper.HitTest(TodoList, pos);
+            var pos = e.GetPosition(_todoList);
+            var result = VisualTreeHelper.HitTest(_todoList, pos);
             if (result == null)
             {
                 return;
@@ -124,15 +187,6 @@ namespace LToDo
             _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(sourcePerson), _mainWindowViewModel.Tasks.IndexOf(targetPerson));
         }
 
-        private void IsTopmost_Click(object sender, RoutedEventArgs e)
-        {
-            _mainWindowViewModel.Topmost = !_mainWindowViewModel.Topmost;
-        }
-
-        private void Edit_Click(object sender, RoutedEventArgs e)
-        {
-            _mainWindowViewModel.Edit = !_mainWindowViewModel.Edit;
-        }
     }
     internal static class Utils
     {
