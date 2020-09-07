@@ -15,7 +15,19 @@ namespace LToDo
         [PrimaryKey]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public bool IsEdit;
+        private bool _isEdit;
+        public bool IsEdit
+        {
+            get
+            {
+                return _isEdit;
+            }
+            set
+            {
+                _isEdit = value;
+                PropertyChange(nameof(IsEdit));
+            }
+        }
 
         private int _number;
         /// <summary>
@@ -79,28 +91,6 @@ namespace LToDo
             {
                 _canMove = value;
                 PropertyChange(nameof(CanMove));
-            }
-        }
-
-        /// <summary>
-        /// 删除Todo
-        /// </summary>
-        [Ignore]
-        public ICommand DeleteCommand
-        {
-            get
-            {
-                return new DelegateCommand
-                {
-                    CommandAction = () =>
-                    {
-                        if (App.Current.MainWindow is MainWindow mainWindow)
-                        {
-                            mainWindow._mainWindowViewModel.Tasks.Remove(this);
-                            TaskManager.RemoveTask(this);
-                        }
-                    }
-                };
             }
         }
     }

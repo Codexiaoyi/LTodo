@@ -21,6 +21,7 @@ namespace LToDo
                 Time = DateTime.Now.ToLongDateString().ToString();
             };
             HasTodo = Tasks.Count > 0;
+            Edit = false;
             Tasks.CollectionChanged += Tasks_CollectionChanged;
         }
 
@@ -105,7 +106,8 @@ namespace LToDo
                 ListName = !Edit ? "清单列表" : "拖动可排序";
                 Tasks.ToList().ForEach(x =>
                 {
-                    x.CanMove = x.IsEnabled ? !Edit ? Visibility.Collapsed : Visibility.Visible : x.CanMove;
+                    x.CanMove = !Edit ? Visibility.Collapsed : Visibility.Visible;
+                    //x.CanMove = x.IsEnabled ? !Edit ? Visibility.Collapsed : Visibility.Visible : x.CanMove;
                     x.IsEdit = Edit;
                 });
                 PropertyChange(nameof(Edit));

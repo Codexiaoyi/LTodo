@@ -187,6 +187,20 @@ namespace LToDo
             _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(sourcePerson), _mainWindowViewModel.Tasks.IndexOf(targetPerson));
         }
 
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            var data = (sender as FrameworkElement).DataContext;
+            if (data is TaskModel task)
+            {
+                TaskManager.RemoveTask(task);
+                _mainWindowViewModel.Tasks.Remove(task);
+            }
+        }
+
+        private void Item_MouseEnter(object sender, MouseEventArgs e)
+        {
+
+        }
     }
     internal static class Utils
     {

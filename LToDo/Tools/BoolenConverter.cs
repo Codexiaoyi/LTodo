@@ -13,10 +13,12 @@ namespace LToDo
         {
             switch ((string)parameter)
             {
+                case "IsEdit":
+                    return (bool)value ? Visibility.Visible : Visibility.Collapsed;
                 case "Height":
                     return (bool)value ? 200 : 32;
                 case "Opacity":
-                    return (bool)value ? 0.95 : 0.5;
+                    return (bool)value ? 0.8 : 0.5;
                 case "TextWrapping":
                     return (bool)value ? TextWrapping.Wrap : TextWrapping.NoWrap;
                 case "AcceptsReturn":
