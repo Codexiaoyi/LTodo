@@ -86,6 +86,7 @@ namespace LToDo
                 //从无到有
                 var slideCollapsed = Resources["EditVisible"] as Storyboard;
                 slideCollapsed?.Begin((sender as FrameworkElement));
+                _edit.IsHitTestVisible = true;
                 _editEnd.Visibility = Visibility.Collapsed;
             }
             else
@@ -94,6 +95,7 @@ namespace LToDo
                 var slideVisible = Resources["EditCollapsed"] as Storyboard;
                 slideVisible?.Begin((sender as FrameworkElement));
                 _editEnd.Visibility = Visibility.Visible;
+                _edit.IsHitTestVisible = false;
             }
         }
 
@@ -138,6 +140,7 @@ namespace LToDo
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                IsClick = false;
                 var pos = e.GetPosition(_todoList);
                 HitTestResult result = VisualTreeHelper.HitTest(_todoList, pos);
                 if (result == null)
@@ -156,11 +159,13 @@ namespace LToDo
 
         private void TodoList_Drop(object sender, DragEventArgs e)
         {
+            IsClick = false;
             TaskManager.UpdateTasks(_mainWindowViewModel.Tasks.ToArray());
         }
 
         private void TodoList_DragEnter(object sender, DragEventArgs e)
         {
+            IsClick = false;
             var pos = e.GetPosition(_todoList);
             var result = VisualTreeHelper.HitTest(_todoList, pos);
             if (result == null)
@@ -197,9 +202,21 @@ namespace LToDo
             }
         }
 
-        private void Item_MouseEnter(object sender, MouseEventArgs e)
-        {
+        bool IsClick;
 
+        private void TodoList_ButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            IsClick = true;
+        }
+
+        private void TodoList_ButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            IsClick = false;
+            var data = (sender as FrameworkElement).DataContext;
+            if (data is TaskModel task)
+            {
+                task.IsEnabled = !task.IsEnabled;
+            }
         }
     }
     internal static class Utils

@@ -18,7 +18,7 @@ namespace LToDo
                 case "Height":
                     return (bool)value ? 200 : 32;
                 case "Opacity":
-                    return (bool)value ? 0.8 : 0.5;
+                    return (bool)value ? 0.9 : 0.9;
                 case "TextWrapping":
                     return (bool)value ? TextWrapping.Wrap : TextWrapping.NoWrap;
                 case "AcceptsReturn":

@@ -74,9 +74,9 @@
                 <ListBox x:Name="_todoList" Grid.Row="3" Margin="15 0 15 12" ItemsSource="{Binding Tasks}" BorderThickness="0" Background="Transparent" Visibility="{Binding HasTodo,Converter={StaticResource HasToDoToVisibilityConverter},ConverterParameter=ListBox}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid HorizontalAlignment="Stretch" MouseEnter="Item_MouseEnter">
+                            <Grid HorizontalAlignment="Stretch">
                                 <Border x:Name="_background" Background="{StaticResource DarkGray}" CornerRadius="5" Margin="2 6" Opacity="0.3"/>
-                                <Border x:Name="_text" Margin="2 6" Opacity="0.85">
+                                <Border x:Name="_text" Margin="2 6">
                                     <CheckBox VerticalAlignment="Center" HorizontalAlignment="Stretch" IsChecked="{Binding IsEnabled}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="10 6">
                                         <CheckBox.Template>
                                             <ControlTemplate TargetType="CheckBox">
@@ -93,14 +93,14 @@
                                                         <Setter TargetName="_content" Property="Foreground" Value="{StaticResource DarkGray}"/>
                                                     </Trigger>
                                                     <Trigger Property="IsChecked" Value="True">
-                                                        <Setter TargetName="_content" Property="Foreground" Value="{StaticResource DarkWhite}"/>
+                                                        <Setter TargetName="_content" Property="Foreground" Value="{StaticResource White}"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </CheckBox.Template>
                                     </CheckBox>
                                 </Border>
-                                <Border x:Name="_move" AllowDrop="True" PreviewMouseMove="TodoList_PreviewMouseMove" DragEnter="TodoList_DragEnter" Drop="TodoList_Drop" VerticalAlignment="Stretch" Margin="0 0 5 0" Background="Transparent" Cursor="Hand" HorizontalAlignment="Stretch" Visibility="{Binding CanMove}"/>
+                                <Border x:Name="_move" AllowDrop="True" MouseLeftButtonDown="TodoList_ButtonDown" MouseLeftButtonUp="TodoList_ButtonUp" PreviewMouseMove="TodoList_PreviewMouseMove" DragEnter="TodoList_DragEnter" Drop="TodoList_Drop" VerticalAlignment="Stretch" Margin="0 0 5 0" Background="Transparent" Cursor="Hand" HorizontalAlignment="Stretch" Visibility="{Binding CanMove}"/>
                                 <Border x:Name="_delete" Width="0" Background="{StaticResource DarkBlack}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Margin="2 6" CornerRadius="0 5 5 0" Opacity="0.6" Visibility="Collapsed">
                                     <Button Click="Delete_Click" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                         <Image Source="Resources/Delete.png" Width="14" Height="14"/>
@@ -109,7 +109,7 @@
                             </Grid>
                             <DataTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="_text" Property="Opacity" Value="1"/>
+                                    <Setter TargetName="_text" Property="Opacity" Value="0.85"/>
                                     <Setter TargetName="_delete" Property="Visibility" Value="{Binding IsEdit,Converter={StaticResource BoolenConverter},ConverterParameter=IsEdit}"/>
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
