@@ -7,7 +7,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Logo.ico</ApplicationIcon>
     <SignAssembly>false</SignAssembly>
-    <Version>1.5.0</Version>
+    <Version>1.6.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +20,7 @@
     <None Remove="Resources\NoContent.png" />
     <None Remove="Resources\TopMost.png" />
     <None Remove="Resources\TopMostBlue.png" />
+    <None Remove="Resources\Update.png" />
     <None Remove="Select.png" />
     <None Remove="Sort.png" />
     <None Remove="Top.png" />
@@ -50,6 +51,7 @@
     </Resource>
     <Resource Include="Resources\TopMost.png" />
     <Resource Include="Resources\TopMostBlue.png" />
+    <Resource Include="Resources\Update.png" />
   </ItemGroup>
 
 </Project>

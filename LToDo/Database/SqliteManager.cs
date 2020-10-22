@@ -24,12 +24,7 @@ namespace LToDo.Database
 
         private SqliteManager()
         {
-            var baseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Assembly.GetExecutingAssembly().GetName().Name);
-            if (!Directory.Exists(baseFolder))
-            {
-                Directory.CreateDirectory(baseFolder);
-            }
-            db = new SQLiteConnection(Path.Combine(baseFolder, "LTodo.db"));
+            db = new SQLiteConnection(Config.DatabasePath);
             db.CreateTable<TaskModel>();
         }
 

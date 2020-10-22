@@ -33,6 +33,10 @@ namespace LToDo
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
+            if (e.ClickCount == 2)
+            {
+                WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            }
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -40,7 +44,14 @@ namespace LToDo
             var data = (sender as FrameworkElement).DataContext;
             if (data is TaskModel task)
             {
-                _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(task), _mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count() - 1);
+                if (Config.IsTaskToBottom)
+                {
+                    _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(task), _mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count() - 1);
+                }
+                else
+                {
+                    _mainWindowViewModel.Tasks.Move(_mainWindowViewModel.Tasks.IndexOf(task), 0);
+                }
             }
         }
 
@@ -66,9 +77,17 @@ namespace LToDo
             if (!string.IsNullOrEmpty(_newTask.Text))
             {
                 var newTask = new TaskModel() { Content = _newTask.Text };
-                var lastIndex = _mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count();
-                _mainWindowViewModel.Tasks.Insert(lastIndex, newTask);
-                TaskManager.AddNewTask(_mainWindowViewModel.Tasks[lastIndex]);
+                if (Config.IsTaskToBottom)
+                {
+                    var lastIndex = _mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count();
+                    _mainWindowViewModel.Tasks.Insert(lastIndex, newTask);
+                    TaskManager.AddNewTask(_mainWindowViewModel.Tasks[lastIndex]);
+                }
+                else
+                {
+                    _mainWindowViewModel.Tasks.Insert(0, newTask);
+                    TaskManager.AddNewTask(_mainWindowViewModel.Tasks[0]);
+                }
                 _newTask.Text = string.Empty;
             }
         }
@@ -217,6 +236,38 @@ namespace LToDo
             {
                 task.IsEnabled = !task.IsEnabled;
             }
+        }
+
+        private void Update_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            _update.Visibility = Visibility.Collapsed;
+            _updateText.Text = string.Empty;
+        }
+
+        private void Update_Save_Click(object sender, RoutedEventArgs e)
+        {
+            _update.Visibility = Visibility.Collapsed;
+            var data = (sender as FrameworkElement).DataContext;
+            if (!string.IsNullOrEmpty(_updateText.Text) && data is TaskModel task)
+            {
+                task.Content = _updateText.Text;
+                _mainWindowViewModel.Tasks.FirstOrDefault(x => x.Id == task.Id).Content = _updateText.Text;
+                TaskManager.UpdateTask(task);
+            }
+            _updateText.Text = string.Empty;
+        }
+
+        private void Update_Click(object sender, RoutedEventArgs e)
+        {
+            _update.Visibility = Visibility.Visible;
+            var data = (sender as FrameworkElement).DataContext;
+            if (data is TaskModel task)
+            {
+                _updateText.Text = task.Content;
+                _update.DataContext = task;
+            }
+            _updateText.Focus();
+            _updateText.CaretIndex = _updateText.Text.Length;
         }
     }
     internal static class Utils

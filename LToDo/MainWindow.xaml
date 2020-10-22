@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LToDo" Icon="Logo.ico"
         AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize"
         mc:Ignorable="d" Background="Transparent" Topmost="{Binding Topmost}"
-        Height="420" Width="320" ShowInTaskbar="False">
+        Height="410" Width="310" ShowInTaskbar="False">
     <Window.Resources>
         <local:BoolenConverter x:Key="BoolenConverter"/>
         <local:HasTodoToVisibilityConverter x:Key="HasToDoToVisibilityConverter"/>
@@ -27,14 +27,11 @@
             <DoubleAnimation Storyboard.TargetName="_edit" Storyboard.TargetProperty="Height" From="200" To="32" Duration="00:00:0.3"/>
         </Storyboard>
     </Window.Resources>
-    <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderThickness="0" CornerRadius="10" Margin="10">
+    <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderThickness="0" CornerRadius="10" Margin="5">
         <Border.Effect>
-            <DropShadowEffect ShadowDepth="0" Color="LightGray" Opacity="0.7" BlurRadius="15"/>
+            <DropShadowEffect ShadowDepth="0" Color="LightGray" Opacity="0.7" BlurRadius="10"/>
         </Border.Effect>
         <Grid>
-            <Grid.Clip>
-                <RectangleGeometry Rect="0,0,300,400" RadiusX="10" RadiusY="10"/>
-            </Grid.Clip>
             <Border Background="{StaticResource Black}" Opacity="0.7" BorderThickness="1" BorderBrush="{StaticResource Gray}" CornerRadius="10" MouseLeftButtonDown="Border_MouseLeftButtonDown"/>
             <Grid Margin="5">
                 <Grid.RowDefinitions>
@@ -101,10 +98,19 @@
                                     </CheckBox>
                                 </Border>
                                 <Border x:Name="_move" AllowDrop="True" MouseLeftButtonDown="TodoList_ButtonDown" MouseLeftButtonUp="TodoList_ButtonUp" PreviewMouseMove="TodoList_PreviewMouseMove" DragEnter="TodoList_DragEnter" Drop="TodoList_Drop" VerticalAlignment="Stretch" Margin="0 0 5 0" Background="Transparent" Cursor="Hand" HorizontalAlignment="Stretch" Visibility="{Binding CanMove}"/>
-                                <Border x:Name="_delete" Width="0" Background="{StaticResource DarkBlack}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Margin="2 6" CornerRadius="0 5 5 0" Opacity="0.6" Visibility="Collapsed">
-                                    <Button Click="Delete_Click" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                        <Image Source="Resources/Delete.png" Width="14" Height="14"/>
-                                    </Button>
+                                <Border x:Name="_delete" Width="0" Background="{StaticResource DarkBlack}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Margin="2 6" CornerRadius="0 5 5 0" Opacity="0.9" Visibility="Collapsed">
+                                    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Click="Update_Click" Margin="6 0" ToolTip="修改">
+                                            <Image Source="Resources/Update.png" Width="14" Height="14"/>
+                                        </Button>
+                                        <Button Click="Delete_Click" Grid.Column="1" Margin="6 0" ToolTip="删除">
+                                            <Image Source="Resources/Delete.png" Width="14" Height="14"/>
+                                        </Button>
+                                    </Grid>
                                 </Border>
                             </Grid>
                             <DataTemplate.Triggers>
@@ -114,7 +120,7 @@
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="_delete" Storyboard.TargetProperty="Width" From="0" To="44" Duration="0:0:0.4"/>
+                                                <DoubleAnimation Storyboard.TargetName="_delete" Storyboard.TargetProperty="Width" From="0" To="56" Duration="0:0:0.4"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </Trigger.EnterActions>
@@ -145,7 +151,7 @@
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="_newTask" VerticalAlignment="Top" Margin="0,6,0,0" TextWrapping="{Binding IsMultiInput,Converter={StaticResource BoolenConverter},ConverterParameter=TextWrapping}" AcceptsReturn="{Binding IsMultiInput,Converter={StaticResource BoolenConverter},ConverterParameter=AcceptsReturn}" KeyUp="TextBox_KeyUp">
+                    <TextBox x:Name="_newTask" VerticalAlignment="Top" Margin="0,6,0,0" TextWrapping="{Binding IsMultiInput,Converter={StaticResource BoolenConverter},ConverterParameter=TextWrapping}" AcceptsReturn="{Binding IsMultiInput,Converter={StaticResource BoolenConverter},ConverterParameter=AcceptsReturn}" AcceptsTab="True" KeyUp="TextBox_KeyUp">
                         <TextBox.Resources>
                             <VisualBrush x:Key="HintText" TileMode="None" Stretch="None" AlignmentX="Left">
                                 <VisualBrush.Visual>
@@ -178,6 +184,25 @@
                         </Border>
                         <Border Background="{StaticResource Blue}" CornerRadius="3">
                             <Button Click="Save_Click" Content="保存" Margin="8 2" Foreground="{StaticResource White}" FontSize="12" Cursor="Hand"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <Grid x:Name="_update" Visibility="Collapsed">
+                <Border Background="{StaticResource DarkBlack}" Opacity="0.6" CornerRadius="10"/>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="30 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.RowSpan="2" CornerRadius="5" Height="240" Background="{StaticResource DarkGray}" Opacity="0.8"/>
+                    <TextBox x:Name="_updateText" VerticalContentAlignment="Top" Height="200" Background="Transparent" AcceptsReturn="True" AcceptsTab="True" Padding="5"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" Margin="0,5,10,5">
+                        <Border Background="{StaticResource LightGray}" CornerRadius="3" Margin="0,0,10,0">
+                            <Button Click="Update_Cancel_Click" Content="取消" Margin="8 2" Foreground="{StaticResource Black}" FontSize="12" Cursor="Hand"/>
+                        </Border>
+                        <Border Background="{StaticResource Blue}" CornerRadius="3">
+                            <Button Click="Update_Save_Click" Content="确定" Margin="8 2" Foreground="{StaticResource White}" FontSize="12" Cursor="Hand"/>
                         </Border>
                     </StackPanel>
                 </Grid>

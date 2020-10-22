@@ -44,6 +44,35 @@ namespace LToDo
         }
 
         /// <summary>
+        /// 新项是否插入到底部
+        /// </summary>
+        public ICommand TaskToBottomCommand
+        {
+            get
+            {
+                return new DelegateCommand
+                {
+                    CommandAction = () =>
+                    {
+                        TaskToBottomIcon = string.Empty;
+                        if (Config.IsTaskToBottom)
+                        {
+                            Config.IsTaskToBottom = false;
+                        }
+                        else
+                        {
+                            var result = Config.IsTaskToBottom = true;
+                            if (result)
+                            {
+                                TaskToBottomIcon = "  √";
+                            }
+                        }
+                    }
+                };
+            }
+        }
+
+        /// <summary>
         /// 打开软件
         /// </summary>
         public ICommand ShowWindowCommand
@@ -108,6 +137,20 @@ namespace LToDo
             {
                 _autoRunIcon = value;
                 PropertyChange(nameof(AutoRunIcon));
+            }
+        }
+
+        private string _taskToBottomIcon;
+        public string TaskToBottomIcon
+        {
+            get
+            {
+                return _taskToBottomIcon;
+            }
+            set
+            {
+                _taskToBottomIcon = value;
+                PropertyChange(nameof(TaskToBottomIcon));
             }
         }
     }

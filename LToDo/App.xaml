@@ -13,15 +13,16 @@
             <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
                 <MenuItem Header="隐藏/显示" Command="{Binding HideCommand}" />
                 <MenuItem Header="操作手册">
-                    <MenuItem Header="---------------------------------------先凑活看吧，有空再做界面（1.5.0）---------------------------------------" IsEnabled="False"/>
-                    <MenuItem Header="1、输入框默认单行输入，修复了原来的bug（要是没发现就算了，别去试）。点击扩展可变为多行输入。。。" IsEnabled="False"/>
-                    <MenuItem Header="2、点击编辑按钮就能拖动排序，非编辑状态无法排序。" IsEnabled="False"/>
-                    <MenuItem Header="3、新增项默认从原来添加到第一个改成添加到底部（用得不爽联系我）。" IsEnabled="False"/>
+                    <MenuItem Header="--------------------------------新版本更新做几个新功能和修复几个bug（1.6.0）--------------------------------" IsEnabled="False"/>
+                    <MenuItem Header="1、双击应用头部或者部分空白区域可以双击666（全屏）" IsEnabled="False"/>
+                    <MenuItem Header="2、编辑状态下增加修改Todo项功能。" IsEnabled="False"/>
+                    <MenuItem Header="3、新增项默认添加到第一个，可以在设置中自己选择。" IsEnabled="False"/>
                     <MenuItem Header="4、其他部分交互基本没有改动，自己看着用吧。。。" IsEnabled="False"/>
                     <MenuItem Header="-----------------------------------------------QQ:874183200----------------------------------------------------" IsEnabled="False"/>
                 </MenuItem>
                 <MenuItem Header="设置">
                     <MenuItem Header="开机自启" Command="{Binding AutoRunCommand}" Icon="{Binding AutoRunIcon}"/>
+                    <MenuItem Header="新项插入到底部" Command="{Binding TaskToBottomCommand}" Icon="{Binding TaskToBottomIcon}"/>
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="退出" Command="{Binding ExitApplicationCommand}" />
