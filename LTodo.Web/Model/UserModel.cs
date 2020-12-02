@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using SqlSugar;
 
 namespace LTodo.Web.Model
 {
@@ -13,12 +11,15 @@ namespace LTodo.Web.Model
             Id = string.IsNullOrEmpty(Id) ? Guid.NewGuid().ToString() : Id;
         }
 
+        [SugarColumn(IsPrimaryKey = true)]
         public string Id { get; set; }
 
         [EmailAddress]
         public string Email { get; set; }
 
         public string Password { get; set; }
+
+        public Platform Platform { get; set; }
 
         public int Level { get; set; } = 1;
     }

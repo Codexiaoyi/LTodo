@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,31 +6,30 @@ using System.Threading.Tasks;
 
 namespace LTodo.Web.Model
 {
-    public class LDbContext : DbContext
+    public class LDbContext
     {
-        public LDbContext()
-        {
-        }
+        private SqlSugarClient _dbBase;
 
-        public LDbContext(DbContextOptions<LDbContext> options)
-            : base(options)
+        public ISqlSugarClient DB
         {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
+            get
             {
-                optionsBuilder.UseMySql("server=47.106.139.187;database=LTodo;uid=root;pwd=lxyLXY04/111997");
+                return _dbBase;
             }
         }
 
-        public virtual DbSet<TaskModel> Tasks { get; set; }
-        public virtual DbSet<UserModel> Users { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public LDbContext()
         {
-            
+            _dbBase = new SqlSugarClient(new ConnectionConfig()
+            {
+                ConnectionString = "server=47.106.139.187;database=LTodo;uid=root;pwd=lxyLXY04/111997",
+                DbType = DbType.MySql,
+                InitKeyType = InitKeyType.Attribute,
+                IsAutoCloseConnection = true
+            });
+
+            _dbBase.CodeFirst.InitTables(typeof(UserModel));
+            _dbBase.CodeFirst.InitTables(typeof(TaskModel));
         }
     }
 }

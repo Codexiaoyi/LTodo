@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using LTodo.Web.Common;
 using LTodo.Web.IRepository;
 using LTodo.Web.Model;
 using LTodo.Web.Model.Dto;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LTodo.Web.Controller
@@ -33,7 +30,8 @@ namespace LTodo.Web.Controller
             {
                 return Ok(new ResponseDto { Code = 202, Message = "密码错误" });
             }
-            return Ok(new ResponseDto { Code = 200, Message = "登录成功" });
+            var token = JWT.GetToken(user);
+            return Ok(new UserResponseDto { Code = 200, Message = "登录成功", Token = token });
         }
 
         [HttpPost("register")]
