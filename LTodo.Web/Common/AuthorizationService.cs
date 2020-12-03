@@ -58,20 +58,20 @@ namespace LTodo.Web.Common
                          }
                          return Task.CompletedTask;
                      },
-                     OnMessageReceived = context =>
-                     {
-                         var accessToken = context.Request.Query["access_token"];
+                     //OnMessageReceived = context =>
+                     //{
+                     //    var accessToken = context.Request.Query["access_token"];
 
-                         var path = context.HttpContext.Request.Path;
-                         if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/MessageHub"))
-                         {
-                             context.Token = accessToken;
-                         }
-                         return Task.CompletedTask;
-                     }
+                     //    var path = context.HttpContext.Request.Path;
+                     //    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/MessageHub"))
+                     //    {
+                     //        context.Token = accessToken;
+                     //    }
+                     //    return Task.CompletedTask;
+                     //}
                  };
              });
-            services.AddAuthorization();
+            //services.AddAuthorization();
         }
     }
 }

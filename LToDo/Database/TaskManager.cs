@@ -15,6 +15,8 @@ namespace LToDo.Database
             return new ObservableCollection<TaskModel>(result);
         }
 
+        public static bool IsTaskExist(string id) => GetTaskById(id) != null;
+
         public static TaskModel GetTaskById(string id)
         {
             return SqliteManager.Instance.Query<TaskModel>($"Select * from TaskModel where Id='{id}'").FirstOrDefault();
@@ -22,22 +24,29 @@ namespace LToDo.Database
 
         public static int AddNewTask(TaskModel task)
         {
+            MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Add, task);
             return SqliteManager.Instance.Add(task);
         }
 
         public static int RemoveTask(TaskModel task)
         {
+            MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Remove, task);
             return SqliteManager.Instance.Delete(task);
         }
 
         public static int UpdateTask(TaskModel task)
         {
+            MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Update, task);
             return SqliteManager.Instance.Update(task);
         }
 
-        public static void UpdateTasks(TaskModel[] models)
+        public static void UpdateTasks(TaskModel[] tasks)
         {
-            SqliteManager.Instance.UpdateTransaction(models);
+            foreach (var task in tasks)
+            {
+                MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Update, task);
+            }
+            SqliteManager.Instance.UpdateTransaction(tasks);
         }
     }
 }

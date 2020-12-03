@@ -22,6 +22,7 @@ namespace LToDo
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool IsClick;
         public MainWindowViewModel _mainWindowViewModel;
         public MainWindow()
         {
@@ -66,28 +67,9 @@ namespace LToDo
 
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && !_mainWindowViewModel.IsMultiInput)
+            if (e.Key == Key.Enter && !_mainWindowViewModel.IsMultiInput && !string.IsNullOrEmpty(_newTask.Text))
             {
-                AddNewTask();
-            }
-        }
-
-        public void AddNewTask()
-        {
-            if (!string.IsNullOrEmpty(_newTask.Text))
-            {
-                var newTask = new TaskModel() { Content = _newTask.Text };
-                if (Config.IsTaskToBottom)
-                {
-                    var lastIndex = _mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count();
-                    _mainWindowViewModel.Tasks.Insert(lastIndex, newTask);
-                    TaskManager.AddNewTask(_mainWindowViewModel.Tasks[lastIndex]);
-                }
-                else
-                {
-                    _mainWindowViewModel.Tasks.Insert(0, newTask);
-                    TaskManager.AddNewTask(_mainWindowViewModel.Tasks[0]);
-                }
+                _mainWindowViewModel.AddNewTask(new TaskModel() { Content = _newTask.Text });
                 _newTask.Text = string.Empty;
             }
         }
@@ -125,7 +107,11 @@ namespace LToDo
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            AddNewTask();
+            if (!string.IsNullOrEmpty(_newTask.Text))
+            {
+                _mainWindowViewModel.AddNewTask(new TaskModel() { Content = _newTask.Text });
+                _newTask.Text = string.Empty;
+            }
             ChangeInputSize((sender as FrameworkElement));
         }
 
@@ -179,7 +165,7 @@ namespace LToDo
         private void TodoList_Drop(object sender, DragEventArgs e)
         {
             IsClick = false;
-            TaskManager.UpdateTasks(_mainWindowViewModel.Tasks.ToArray());
+            _mainWindowViewModel.UpdateAllTasks();
         }
 
         private void TodoList_DragEnter(object sender, DragEventArgs e)
@@ -216,12 +202,9 @@ namespace LToDo
             var data = (sender as FrameworkElement).DataContext;
             if (data is TaskModel task)
             {
-                TaskManager.RemoveTask(task);
-                _mainWindowViewModel.Tasks.Remove(task);
+                _mainWindowViewModel.RemoveTask(task);
             }
         }
-
-        bool IsClick;
 
         private void TodoList_ButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -251,8 +234,7 @@ namespace LToDo
             if (!string.IsNullOrEmpty(_updateText.Text) && data is TaskModel task)
             {
                 task.Content = _updateText.Text;
-                _mainWindowViewModel.Tasks.FirstOrDefault(x => x.Id == task.Id).Content = _updateText.Text;
-                TaskManager.UpdateTask(task);
+                _mainWindowViewModel.UpdateTask(task);
             }
             _updateText.Text = string.Empty;
         }

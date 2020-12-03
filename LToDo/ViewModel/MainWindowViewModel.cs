@@ -22,7 +22,32 @@ namespace LToDo
             };
             HasTodo = Tasks.Count > 0;
             Edit = false;
+            MessageManager.Instance.Connect("874183200@qq.com", "aaaaaa");
+            MessageManager.OnReceiveMessage += MessageManager_OnReceiveMessage;
             Tasks.CollectionChanged += Tasks_CollectionChanged;
+        }
+
+        private void MessageManager_OnReceiveMessage(LTodo.Model.MessageType message, TaskModel task)
+        {
+            switch (message)
+            {
+                case LTodo.Model.MessageType.Add:
+                    if (!TaskManager.IsTaskExist(task.Id))
+                        AddNewTask(task);
+                    else
+                        AddNewTask(task, false);
+                    break;
+                case LTodo.Model.MessageType.Remove:
+                    if (TaskManager.IsTaskExist(task.Id))
+                        RemoveTask(task);
+                    break;
+                case LTodo.Model.MessageType.Update:
+                    if (TaskManager.IsTaskExist(task.Id))
+                        UpdateTask(task);
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void Tasks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -51,6 +76,61 @@ namespace LToDo
                 _tasks = value;
                 PropertyChange(nameof(Tasks));
             }
+        }
+
+        /// <summary>
+        /// 添加新任务
+        /// </summary>
+        /// <param name="newTask"></param>
+        public void AddNewTask(TaskModel newTask, bool isUpdate = true)
+        {
+            if (Config.IsTaskToBottom)
+            {
+                var lastIndex = Tasks.Where(x => x.IsEnabled == true).Count();
+                Tasks.Insert(lastIndex, newTask);
+                if (isUpdate)
+                    TaskManager.AddNewTask(Tasks[lastIndex]);
+            }
+            else
+            {
+                Tasks.Insert(0, newTask);
+                if (isUpdate)
+                    TaskManager.AddNewTask(Tasks[0]);
+            }
+        }
+
+        /// <summary>
+        /// 删除任务
+        /// </summary>
+        /// <param name="task"></param>
+        public void RemoveTask(TaskModel task)
+        {
+            Tasks.Remove(task);
+            TaskManager.RemoveTask(task);
+        }
+
+        /// <summary>
+        /// 更新任务
+        /// </summary>
+        /// <param name="task"></param>
+        public void UpdateTask(TaskModel task)
+        {
+            var oldTask = Tasks.FirstOrDefault(x => x.Id == task.Id);
+            if (oldTask != null)
+            {
+                oldTask.Number = task.Number;
+                oldTask.Content = task.Content;
+                TaskManager.UpdateTask(task);
+            }
+        }
+
+        /// <summary>
+        /// 批量更新任务
+        /// </summary>
+        /// <param name="task"></param>
+        public void UpdateAllTasks()
+        {
+            TaskManager.UpdateTasks(Tasks.ToArray());
         }
 
         private string _time = DateTime.Now.ToLongDateString().ToString();

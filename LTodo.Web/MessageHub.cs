@@ -70,7 +70,7 @@ namespace LTodo.Web
                     break;
             }
             //给剩余客户端发通知
-            await Clients.GroupExcept(userEmail, Context.ConnectionId).SendAsync("Recieve_SR", messageType, task);
+            await Clients.GroupExcept(userEmail, Context.ConnectionId).SendAsync("Receive_SR", messageType, task);
         }
     }
 }

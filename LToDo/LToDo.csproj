@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Logo.ico</ApplicationIcon>
@@ -28,7 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.13" />
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
   </ItemGroup>
 

@@ -13,21 +13,7 @@ namespace LToDo
     public class TaskModel : ViewModelBase
     {
         [PrimaryKey]
-        public Guid Id { get; set; } = Guid.NewGuid();
-
-        private bool _isEdit;
-        public bool IsEdit
-        {
-            get
-            {
-                return _isEdit;
-            }
-            set
-            {
-                _isEdit = value;
-                PropertyChange(nameof(IsEdit));
-            }
-        }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         private int _number;
         /// <summary>
@@ -76,6 +62,21 @@ namespace LToDo
                 CanMove = _isEnabled ? IsEdit ? Visibility.Visible : CanMove : Visibility.Collapsed;
                 Number = _isEnabled ? Number : 0;
                 PropertyChange(nameof(IsEnabled));
+            }
+        }
+
+        private bool _isEdit;
+        [Ignore]
+        public bool IsEdit
+        {
+            get
+            {
+                return _isEdit;
+            }
+            set
+            {
+                _isEdit = value;
+                PropertyChange(nameof(IsEdit));
             }
         }
 
