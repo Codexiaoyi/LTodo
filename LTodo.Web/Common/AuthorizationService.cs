@@ -71,7 +71,7 @@ namespace LTodo.Web.Common
                      //}
                  };
              });
-            //services.AddAuthorization();
+            services.AddAuthorization();
         }
     }
 }

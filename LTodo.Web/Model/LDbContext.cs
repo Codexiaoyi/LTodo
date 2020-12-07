@@ -22,11 +22,13 @@ namespace LTodo.Web.Model
         {
             _dbBase = new SqlSugarClient(new ConnectionConfig()
             {
-                ConnectionString = "server=47.106.139.187;database=LTodo;uid=root;pwd=lxyLXY04/111997",
+                ConnectionString = "server=47.106.139.187;database=LTodo_Test;uid=root;pwd=lxyLXY04/111997",
                 DbType = DbType.MySql,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
+
+            _dbBase.DbMaintenance.CreateDatabase();
 
             _dbBase.CodeFirst.InitTables(typeof(UserModel));
             _dbBase.CodeFirst.InitTables(typeof(TaskModel));

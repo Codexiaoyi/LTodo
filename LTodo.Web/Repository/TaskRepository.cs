@@ -15,5 +15,15 @@ namespace LTodo.Web.Repository
         {
             this.dbContext = dbContext;
         }
+
+        public async Task<List<TaskModel>> GetAllByEmailAsync(string email)
+        {
+            return await dbContext.DB.Queryable<TaskModel>().Where(x => x.UserEmail == email).ToListAsync();
+        }
+
+        public async Task<int> UpdateAllAsync(List<TaskModel> tasks)
+        {
+            return await dbContext.DB.Updateable(tasks).ExecuteCommandAsync();
+        }
     }
 }

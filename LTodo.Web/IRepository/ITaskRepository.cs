@@ -8,5 +8,7 @@ namespace LTodo.Web.IRepository
 {
     public interface ITaskRepository : IBaseRepository<TaskModel>
     {
+        Task<List<TaskModel>> GetAllByEmailAsync(string email);
+        Task<int> UpdateAllAsync(List<TaskModel> tasks);
     }
 }

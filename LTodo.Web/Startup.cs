@@ -26,7 +26,7 @@ namespace LTodo.Web
             services.AddScoped<ITaskRepository, TaskRepository>();
             services.AddAuthorizationService();
             services.AddControllers();
-            services.AddSignalR();
+            //services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -37,10 +37,12 @@ namespace LTodo.Web
             }
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<MessageHub>("/MessageHub");
+                //endpoints.MapHub<MessageHub>("/MessageHub");
                 endpoints.MapControllers();
             });
         }

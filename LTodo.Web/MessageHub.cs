@@ -34,10 +34,6 @@ namespace LTodo.Web
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, userEmail);
             }
-            else
-            {
-                await Disconnect_SR(userEmail);
-            }
         }
 
         /// <summary>
