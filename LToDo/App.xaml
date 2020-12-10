@@ -4,14 +4,15 @@
              xmlns:local="clr-namespace:LToDo"
              xmlns:tb="http://www.hardcodet.net/taskbar"
              ShutdownMode="OnExplicitShutdown"
-             StartupUri="MainWindow.xaml">
+             StartupUri="View/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="./Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
-                <MenuItem Header="隐藏/显示" Command="{Binding HideCommand}" />
+                <MenuItem Header="隐藏/显示" Command="{Binding HideMainWindowCommand}" />
+                <MenuItem Header="{Binding AccountHeader}" Command="{Binding ChangeAccountCommand}"/>
                 <MenuItem Header="操作手册">
                     <MenuItem Header="--------------------------------新版本更新做几个新功能和修复几个bug（1.6.0）--------------------------------" IsEnabled="False"/>
                     <MenuItem Header="1、双击应用头部或者部分空白区域可以双击666（全屏）" IsEnabled="False"/>
@@ -21,8 +22,8 @@
                     <MenuItem Header="-----------------------------------------------QQ:874183200----------------------------------------------------" IsEnabled="False"/>
                 </MenuItem>
                 <MenuItem Header="设置">
-                    <MenuItem Header="开机自启" Command="{Binding AutoRunCommand}" Icon="{Binding AutoRunIcon}"/>
-                    <MenuItem Header="新项插入到底部" Command="{Binding TaskToBottomCommand}" Icon="{Binding TaskToBottomIcon}"/>
+                    <MenuItem Header="开机自启" Command="{Binding SetAutoRunCommand}" Icon="{Binding AutoRunIcon}"/>
+                    <MenuItem Header="新项插入到底部" Command="{Binding SetTaskSiteCommand}" Icon="{Binding TaskToBottomIcon}"/>
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="退出" Command="{Binding ExitApplicationCommand}" />
@@ -31,7 +32,7 @@
                             ToolTipText="LTodo" 
                             IconSource="Logo.ico" 
                             ContextMenu="{StaticResource SysTrayMenu}" 
-                            DoubleClickCommand="{Binding ShowWindowCommand}">
+                            DoubleClickCommand="{Binding ShowMainWindowCommand}">
                 <tb:TaskbarIcon.DataContext>
                     <local:NotifyIconViewModel />
                 </tb:TaskbarIcon.DataContext>

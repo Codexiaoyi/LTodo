@@ -1,4 +1,5 @@
-﻿using LToDo.Database;
+﻿using GalaSoft.MvvmLight;
+using LToDo.Database;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace LToDo
             set
             {
                 _number = value;
-                PropertyChange(nameof(Number));
+                RaisePropertyChanged(nameof(Number));
             }
         }
 
@@ -45,7 +46,7 @@ namespace LToDo
             set
             {
                 _content = value;
-                PropertyChange(nameof(Content));
+                RaisePropertyChanged(nameof(Content));
             }
         }
 
@@ -61,7 +62,7 @@ namespace LToDo
                 _isEnabled = value;
                 CanMove = _isEnabled ? IsEdit ? Visibility.Visible : CanMove : Visibility.Collapsed;
                 Number = _isEnabled ? Number : 0;
-                PropertyChange(nameof(IsEnabled));
+                RaisePropertyChanged(nameof(IsEnabled));
             }
         }
 
@@ -76,7 +77,7 @@ namespace LToDo
             set
             {
                 _isEdit = value;
-                PropertyChange(nameof(IsEdit));
+                RaisePropertyChanged(nameof(IsEdit));
             }
         }
 
@@ -91,7 +92,7 @@ namespace LToDo
             set
             {
                 _canMove = value;
-                PropertyChange(nameof(CanMove));
+                RaisePropertyChanged(nameof(CanMove));
             }
         }
     }

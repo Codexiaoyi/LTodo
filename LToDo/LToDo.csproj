@@ -30,6 +30,8 @@
   <ItemGroup>
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.0" />
+    <PackageReference Include="MvvmLight" Version="5.4.1.1" />
+    <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
   </ItemGroup>
 
@@ -41,15 +43,9 @@
     <Resource Include="Resources\Item.png" />
     <Resource Include="Resources\Move.png" />
     <Resource Include="Resources\NoContent.png" />
-    <Resource Include="Resources\Select.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Top.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\TopBlue.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Resources\Select.png" />
+    <Resource Include="Resources\Top.png" />
+    <Resource Include="Resources\TopBlue.png" />
     <Resource Include="Resources\TopMost.png" />
     <Resource Include="Resources\TopMostBlue.png" />
     <Resource Include="Resources\Update.png" />

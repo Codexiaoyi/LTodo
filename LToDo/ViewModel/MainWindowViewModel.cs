@@ -1,4 +1,5 @@
-﻿using LToDo.Database;
+﻿using GalaSoft.MvvmLight;
+using LToDo.Database;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,34 +23,120 @@ namespace LToDo
             };
             HasTodo = Tasks.Count > 0;
             Edit = false;
-            MessageManager.Instance.Connect("874183200@qq.com", "aaaaaa");
-            MessageManager.OnReceiveMessage += MessageManager_OnReceiveMessage;
             Tasks.CollectionChanged += Tasks_CollectionChanged;
         }
 
-        private void MessageManager_OnReceiveMessage(LTodo.Model.MessageType message, TaskModel task)
+        #region Message
+        //private void SubscribeMessage()
+        //{
+        //    MessageManager.Instance.Connect("874183200@qq.com", "aaaaaa");
+        //    MessageManager.OnReceiveMessage += MessageManager_OnReceiveMessage;
+        //}
+
+        //private void MessageManager_OnReceiveMessage(LTodo.Model.MessageType message, TaskModel task)
+        //{
+        //    switch (message)
+        //    {
+        //        case LTodo.Model.MessageType.Add:
+        //            if (!TaskManager.IsTaskExist(task.Id))
+        //                AddNewTask(task);
+        //            else
+        //                AddNewTask(task, false);
+        //            break;
+        //        case LTodo.Model.MessageType.Remove:
+        //            if (TaskManager.IsTaskExist(task.Id))
+        //                RemoveTask(task);
+        //            break;
+        //        case LTodo.Model.MessageType.Update:
+        //            if (TaskManager.IsTaskExist(task.Id))
+        //                UpdateTask(task);
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
+        #endregion
+
+        #region Property
+        private ObservableCollection<TaskModel> _tasks = TaskManager.GetAllTasks();
+        public ObservableCollection<TaskModel> Tasks
         {
-            switch (message)
+            get { return _tasks; }
+            set
             {
-                case LTodo.Model.MessageType.Add:
-                    if (!TaskManager.IsTaskExist(task.Id))
-                        AddNewTask(task);
-                    else
-                        AddNewTask(task, false);
-                    break;
-                case LTodo.Model.MessageType.Remove:
-                    if (TaskManager.IsTaskExist(task.Id))
-                        RemoveTask(task);
-                    break;
-                case LTodo.Model.MessageType.Update:
-                    if (TaskManager.IsTaskExist(task.Id))
-                        UpdateTask(task);
-                    break;
-                default:
-                    break;
+                _tasks = value;
+                RaisePropertyChanged(nameof(Tasks));
             }
         }
 
+        private string _time = DateTime.Now.ToLongDateString().ToString();
+        public string Time
+        {
+            get { return _time; }
+            set { _time = value; RaisePropertyChanged(nameof(Time)); }
+        }
+
+        /// <summary>
+        /// 是否有Todo项
+        /// </summary>
+        public bool HasTodo { get; set; }
+
+        private bool _isMultiInput;
+        /// <summary>
+        /// 是否多行输入框
+        /// </summary>
+        public bool IsMultiInput
+        {
+            get { return _isMultiInput; }
+            set { _isMultiInput = value; RaisePropertyChanged(nameof(IsMultiInput)); }
+        }
+
+        #region 置顶
+        private bool _topmost = false;
+        public bool Topmost
+        {
+            get { return _topmost; }
+            set
+            {
+                _topmost = value;
+                TopmostSource = !_topmost ? new BitmapImage(new Uri("Resources/TopMost.png", UriKind.Relative)) : new BitmapImage(new Uri("Resources/TopMostBlue.png", UriKind.Relative));
+                TopmostToolTip = !_topmost ? "置顶" : "取消置顶";
+                RaisePropertyChanged(nameof(Topmost));
+                RaisePropertyChanged(nameof(TopmostSource));
+                RaisePropertyChanged(nameof(TopmostToolTip));
+            }
+        }
+        public BitmapImage TopmostSource { get; set; } = new BitmapImage(new Uri("Resources/TopMost.png", UriKind.Relative));
+        public string TopmostToolTip { get; set; } = "置顶";
+        #endregion
+
+        #region 编辑
+        private bool _edit = false;
+        public bool Edit
+        {
+            get { return _edit; }
+            set
+            {
+                _edit = value;
+                EditToolTip = !Edit ? "编辑" : "取消编辑";
+                ListName = !Edit ? "清单列表" : "拖动可排序";
+                Tasks.ToList().ForEach(x =>
+                {
+                    x.CanMove = !Edit ? Visibility.Collapsed : Visibility.Visible;
+                    //x.CanMove = x.IsEnabled ? !Edit ? Visibility.Collapsed : Visibility.Visible : x.CanMove;
+                    x.IsEdit = Edit;
+                });
+                RaisePropertyChanged(nameof(Edit));
+                RaisePropertyChanged(nameof(ListName));
+                RaisePropertyChanged(nameof(EditToolTip));
+            }
+        }
+        public string EditToolTip { get; set; } = "编辑";
+        public string ListName { get; set; } = "清单列表";
+        #endregion
+        #endregion
+
+        #region Method
         private void Tasks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             Tasks.ToList().ForEach(x =>
@@ -63,18 +150,7 @@ namespace LToDo
             if (e.Action != System.Collections.Specialized.NotifyCollectionChangedAction.Move)
             {
                 HasTodo = Tasks.Count <= 0 ? false : true;
-                PropertyChange(nameof(HasTodo));
-            }
-        }
-
-        private ObservableCollection<TaskModel> _tasks = TaskManager.GetAllTasks();
-        public ObservableCollection<TaskModel> Tasks
-        {
-            get { return _tasks; }
-            set
-            {
-                _tasks = value;
-                PropertyChange(nameof(Tasks));
+                RaisePropertyChanged(nameof(HasTodo));
             }
         }
 
@@ -132,72 +208,6 @@ namespace LToDo
         {
             TaskManager.UpdateTasks(Tasks.ToArray());
         }
-
-        private string _time = DateTime.Now.ToLongDateString().ToString();
-        public string Time
-        {
-            get { return _time; }
-            set { _time = value; PropertyChange(nameof(Time)); }
-        }
-
-        /// <summary>
-        /// 是否有Todo项
-        /// </summary>
-        public bool HasTodo { get; set; }
-
-        private bool _isMultiInput;
-        /// <summary>
-        /// 是否多行输入框
-        /// </summary>
-        public bool IsMultiInput
-        {
-            get { return _isMultiInput; }
-            set { _isMultiInput = value; PropertyChange(nameof(IsMultiInput)); }
-        }
-
-        #region 置顶
-        private bool _topmost = false;
-        public bool Topmost
-        {
-            get { return _topmost; }
-            set
-            {
-                _topmost = value;
-                TopmostSource = !_topmost ? new BitmapImage(new Uri("Resources/TopMost.png", UriKind.Relative)) : new BitmapImage(new Uri("Resources/TopMostBlue.png", UriKind.Relative));
-                TopmostToolTip = !_topmost ? "置顶" : "取消置顶";
-                PropertyChange(nameof(Topmost));
-                PropertyChange(nameof(TopmostSource));
-                PropertyChange(nameof(TopmostToolTip));
-            }
-        }
-        public BitmapImage TopmostSource { get; set; } = new BitmapImage(new Uri("Resources/TopMost.png", UriKind.Relative));
-        public string TopmostToolTip { get; set; } = "置顶";
         #endregion
-
-        #region 编辑
-        private bool _edit = false;
-        public bool Edit
-        {
-            get { return _edit; }
-            set
-            {
-                _edit = value;
-                EditToolTip = !Edit ? "编辑" : "取消编辑";
-                ListName = !Edit ? "清单列表" : "拖动可排序";
-                Tasks.ToList().ForEach(x =>
-                {
-                    x.CanMove = !Edit ? Visibility.Collapsed : Visibility.Visible;
-                    //x.CanMove = x.IsEnabled ? !Edit ? Visibility.Collapsed : Visibility.Visible : x.CanMove;
-                    x.IsEdit = Edit;
-                });
-                PropertyChange(nameof(Edit));
-                PropertyChange(nameof(ListName));
-                PropertyChange(nameof(EditToolTip));
-            }
-        }
-        public string EditToolTip { get; set; } = "编辑";
-        public string ListName { get; set; } = "清单列表";
-        #endregion
-
     }
 }

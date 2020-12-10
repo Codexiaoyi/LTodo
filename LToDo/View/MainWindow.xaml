@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LToDo" Icon="Logo.ico"
+        xmlns:local="clr-namespace:LToDo" Icon="/Logo.ico"
         AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize"
         mc:Ignorable="d" Background="Transparent" Topmost="{Binding Topmost}"
         Height="410" Width="310" ShowInTaskbar="False">
@@ -58,14 +58,14 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding ListName}" Foreground="{StaticResource DarkWhite}" FontSize="14"/>
                     <Button Grid.Column="1" Click="Edit_Click" HorizontalAlignment="Right">
-                        <Image Source="Resources/Edit.png" Width="14" Height="14" SnapsToDevicePixels="True" ToolTip="{Binding EditToolTip}"/>
+                        <Image Source="/Resources/Edit.png" Width="14" Height="14" SnapsToDevicePixels="True" ToolTip="{Binding EditToolTip}"/>
                     </Button>
                     <Border x:Name="_editEnd" Grid.Column="1" HorizontalAlignment="Right" Background="{StaticResource Blue}" CornerRadius="3" Visibility="Collapsed">
                         <Button Click="Edit_Click" Content="完成" Margin="5 0" Foreground="{StaticResource White}" FontSize="12" Cursor="Hand"/>
                     </Border>
                 </Grid>
                 <StackPanel Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Visibility="{Binding HasTodo,Converter={StaticResource HasToDoToVisibilityConverter},ConverterParameter=Background}">
-                    <Image Source="Resources/NoContent.png" Width="128" Height="95"/>
+                    <Image Source="/Resources/NoContent.png" Width="128" Height="95"/>
                     <TextBlock Text="暂无内容" FontSize="16" Foreground="{StaticResource White}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 8 0 0"/>
                 </StackPanel>
                 <ListBox x:Name="_todoList" Grid.Row="3" Margin="15 0 15 12" ItemsSource="{Binding Tasks}" BorderThickness="0" Background="Transparent" Visibility="{Binding HasTodo,Converter={StaticResource HasToDoToVisibilityConverter},ConverterParameter=ListBox}">
@@ -176,7 +176,7 @@
                         </TextBox.Style>
                     </TextBox>
                     <Button Grid.Column="1" Margin="0 0 12 0" Height="14" Width="14" ToolTip="多行添加" Visibility="{Binding IsMultiInput,Converter={StaticResource BoolenConverter},ConverterParameter=EnlargeVisibility}" Click="Enlarge_Click" Cursor="Hand">
-                        <Image Height="14" Width="14" Source="Resources/Enlarge.png"/>
+                        <Image Height="14" Width="14" Source="/Resources/Enlarge.png"/>
                     </Button>
                     <StackPanel Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" Margin="0,5,10,5" Visibility="{Binding IsMultiInput,Converter={StaticResource BoolenConverter},ConverterParameter=ButtonVisibility}">
                         <Border Background="{StaticResource Gray}" CornerRadius="3" Margin="0,0,10,0">
