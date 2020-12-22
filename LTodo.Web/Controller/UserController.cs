@@ -31,7 +31,7 @@ namespace LTodo.Web.Controller
                 return NoContent();
             }
             var token = JWT.GetToken(user);
-            return Ok(token);
+            return Ok(new UserResponseDto() { Token = token });
         }
 
         //[HttpPost("register")]

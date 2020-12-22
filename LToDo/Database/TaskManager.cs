@@ -24,28 +24,28 @@ namespace LToDo.Database
 
         public static int AddNewTask(TaskModel task)
         {
-            MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Add, task);
+            //MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Add, task);
             return SqliteManager.Instance.Add(task);
         }
 
         public static int RemoveTask(TaskModel task)
         {
-            MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Remove, task);
+            //MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Remove, task);
             return SqliteManager.Instance.Delete(task);
         }
 
         public static int UpdateTask(TaskModel task)
         {
-            MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Update, task);
+            //MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Update, task);
             return SqliteManager.Instance.Update(task);
         }
 
         public static void UpdateTasks(TaskModel[] tasks)
         {
-            foreach (var task in tasks)
-            {
-                MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Update, task);
-            }
+            //foreach (var task in tasks)
+            //{
+            //    MessageManager.Instance.SendMessage("874183200@qq.com", LTodo.Model.MessageType.Update, task);
+            //}
             SqliteManager.Instance.UpdateTransaction(tasks);
         }
     }

@@ -23,12 +23,9 @@ namespace LToDo
     public partial class MainWindow : Window
     {
         private bool IsClick;
-        public MainWindowViewModel _mainWindowViewModel;
         public MainWindow()
         {
             InitializeComponent();
-            _mainWindowViewModel = new MainWindowViewModel();
-            DataContext = _mainWindowViewModel;
         }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

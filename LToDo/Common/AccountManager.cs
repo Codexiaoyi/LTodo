@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LToDo.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,5 +36,20 @@ namespace LToDo
         }
 
         public string AccountToken { get; set; }
+
+        /// <summary>
+        /// 登录
+        /// </summary>
+        /// <param name="userEmail">用户邮箱</param>
+        /// <param name="password">密码</param>
+        public async void LoginAsync(string userEmail, string password)
+        {
+            var res = await HttpManager.Instance.PostAsync<LoginResponse>(new LoginRequest(userEmail, password));
+            if (res.IsSuccessResponse)
+            {
+                this.CurrentAccount = "874183200@qq.com";
+                this.AccountToken = res.Token;
+            }
+        }
     }
 }

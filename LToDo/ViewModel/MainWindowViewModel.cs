@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using LToDo.Database;
+using LToDo.Http;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -99,14 +100,14 @@ namespace LToDo
             set
             {
                 _topmost = value;
-                TopmostSource = !_topmost ? new BitmapImage(new Uri("Resources/TopMost.png", UriKind.Relative)) : new BitmapImage(new Uri("Resources/TopMostBlue.png", UriKind.Relative));
+                TopmostSource = !_topmost ? new BitmapImage(new Uri("/Resources/TopMost.png", UriKind.Relative)) : new BitmapImage(new Uri("/Resources/TopMostBlue.png", UriKind.Relative));
                 TopmostToolTip = !_topmost ? "置顶" : "取消置顶";
                 RaisePropertyChanged(nameof(Topmost));
                 RaisePropertyChanged(nameof(TopmostSource));
                 RaisePropertyChanged(nameof(TopmostToolTip));
             }
         }
-        public BitmapImage TopmostSource { get; set; } = new BitmapImage(new Uri("Resources/TopMost.png", UriKind.Relative));
+        public BitmapImage TopmostSource { get; set; } = new BitmapImage(new Uri("/Resources/TopMost.png", UriKind.Relative));
         public string TopmostToolTip { get; set; } = "置顶";
         #endregion
 
@@ -134,6 +135,16 @@ namespace LToDo
         public string EditToolTip { get; set; } = "编辑";
         public string ListName { get; set; } = "清单列表";
         #endregion
+
+        private bool _isSync = false;
+        /// <summary>
+        /// 是否正在同步
+        /// </summary>
+        public bool IsSync
+        {
+            get { return _isSync; }
+            set { _isSync = value; RaisePropertyChanged(nameof(IsSync)); }
+        }
         #endregion
 
         #region Method
@@ -158,20 +169,20 @@ namespace LToDo
         /// 添加新任务
         /// </summary>
         /// <param name="newTask"></param>
-        public void AddNewTask(TaskModel newTask, bool isUpdate = true)
+        public async void AddNewTask(TaskModel newTask, bool isUpdate = true)
         {
             if (Config.IsTaskToBottom)
             {
                 var lastIndex = Tasks.Where(x => x.IsEnabled == true).Count();
                 Tasks.Insert(lastIndex, newTask);
-                if (isUpdate)
-                    TaskManager.AddNewTask(Tasks[lastIndex]);
+                TaskManager.AddNewTask(Tasks[lastIndex]);
+                var res = await HttpManager.Instance.PostAsync<HttpResponse>(new AddTaskRequest(Tasks[lastIndex]));
             }
             else
             {
                 Tasks.Insert(0, newTask);
-                if (isUpdate)
-                    TaskManager.AddNewTask(Tasks[0]);
+                TaskManager.AddNewTask(Tasks[0]);
+                var res = await HttpManager.Instance.PostAsync<HttpResponse>(new AddTaskRequest(Tasks[0]));
             }
         }
 

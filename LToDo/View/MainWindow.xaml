@@ -27,6 +27,9 @@
             <DoubleAnimation Storyboard.TargetName="_edit" Storyboard.TargetProperty="Height" From="200" To="32" Duration="00:00:0.3"/>
         </Storyboard>
     </Window.Resources>
+    <Window.DataContext>
+        <local:MainWindowViewModel x:Name="_mainWindowViewModel"/>
+    </Window.DataContext>
     <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderThickness="0" CornerRadius="10" Margin="5">
         <Border.Effect>
             <DropShadowEffect ShadowDepth="0" Color="LightGray" Opacity="0.7" BlurRadius="10"/>
@@ -44,9 +47,10 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding Time}" Foreground="{StaticResource White}" FontSize="14" IsHitTestVisible="False"/>
-                    <Button Grid.Column="1" Click="IsTopmost_Click" Cursor="Hand">
+                    <Button Grid.Column="2" Click="IsTopmost_Click" Cursor="Hand">
                         <Image Source="{Binding TopmostSource}" Height="14" Width="14" SnapsToDevicePixels="True" ToolTip="{Binding TopmostToolTip}"/>
                     </Button>
                 </Grid>
@@ -105,10 +109,10 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Button Click="Update_Click" Margin="6 0" ToolTip="修改">
-                                            <Image Source="Resources/Update.png" Width="14" Height="14"/>
+                                            <Image Source="/Resources/Update.png" Width="14" Height="14"/>
                                         </Button>
                                         <Button Click="Delete_Click" Grid.Column="1" Margin="6 0" ToolTip="删除">
-                                            <Image Source="Resources/Delete.png" Width="14" Height="14"/>
+                                            <Image Source="/Resources/Delete.png" Width="14" Height="14"/>
                                         </Button>
                                     </Grid>
                                 </Border>
