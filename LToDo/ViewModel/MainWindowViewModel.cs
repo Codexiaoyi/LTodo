@@ -1,30 +1,25 @@
 ﻿using GalaSoft.MvvmLight;
-using LToDo.Database;
-using LToDo.Http;
+using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace LToDo
+namespace LToDo.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        public RelayCommand EditCommand { get; set; }
+        public RelayCommand TopmostCommand { get; set; }
+
         public MainWindowViewModel()
         {
+            EditCommand = new RelayCommand(ChangeEditState);
+            TopmostCommand = new RelayCommand(ChangeTopmostState);
             var timer = new DispatcherTimer() { Interval = TimeSpan.FromDays(1) };
             timer.Tick += (sender, e) =>
             {
                 Time = DateTime.Now.ToLongDateString().ToString();
             };
-            HasTodo = Tasks.Count > 0;
-            Edit = false;
-            Tasks.CollectionChanged += Tasks_CollectionChanged;
         }
 
         #region Message
@@ -59,165 +54,57 @@ namespace LToDo
         #endregion
 
         #region Property
-        private ObservableCollection<TaskModel> _tasks = TaskManager.GetAllTasks();
-        public ObservableCollection<TaskModel> Tasks
-        {
-            get { return _tasks; }
-            set
-            {
-                _tasks = value;
-                RaisePropertyChanged(nameof(Tasks));
-            }
-        }
-
+        private bool _topmost = false;
+        private bool _isEdit = false;
         private string _time = DateTime.Now.ToLongDateString().ToString();
+
         public string Time
         {
             get { return _time; }
             set { _time = value; RaisePropertyChanged(nameof(Time)); }
         }
-
         /// <summary>
-        /// 是否有Todo项
+        /// 是否置顶
         /// </summary>
-        public bool HasTodo { get; set; }
-
-        private bool _isMultiInput;
-        /// <summary>
-        /// 是否多行输入框
-        /// </summary>
-        public bool IsMultiInput
-        {
-            get { return _isMultiInput; }
-            set { _isMultiInput = value; RaisePropertyChanged(nameof(IsMultiInput)); }
-        }
-
-        #region 置顶
-        private bool _topmost = false;
-        public bool Topmost
+        public bool IsTopmost
         {
             get { return _topmost; }
-            set
-            {
-                _topmost = value;
-                TopmostSource = !_topmost ? new BitmapImage(new Uri("/Resources/TopMost.png", UriKind.Relative)) : new BitmapImage(new Uri("/Resources/TopMostBlue.png", UriKind.Relative));
-                TopmostToolTip = !_topmost ? "置顶" : "取消置顶";
-                RaisePropertyChanged(nameof(Topmost));
-                RaisePropertyChanged(nameof(TopmostSource));
-                RaisePropertyChanged(nameof(TopmostToolTip));
-            }
+            set { _topmost = value; RaisePropertyChanged(nameof(IsTopmost)); }
         }
-        public BitmapImage TopmostSource { get; set; } = new BitmapImage(new Uri("/Resources/TopMost.png", UriKind.Relative));
-        public string TopmostToolTip { get; set; } = "置顶";
-        #endregion
-
-        #region 编辑
-        private bool _edit = false;
-        public bool Edit
-        {
-            get { return _edit; }
-            set
-            {
-                _edit = value;
-                EditToolTip = !Edit ? "编辑" : "取消编辑";
-                ListName = !Edit ? "清单列表" : "拖动可排序";
-                Tasks.ToList().ForEach(x =>
-                {
-                    x.CanMove = !Edit ? Visibility.Collapsed : Visibility.Visible;
-                    //x.CanMove = x.IsEnabled ? !Edit ? Visibility.Collapsed : Visibility.Visible : x.CanMove;
-                    x.IsEdit = Edit;
-                });
-                RaisePropertyChanged(nameof(Edit));
-                RaisePropertyChanged(nameof(ListName));
-                RaisePropertyChanged(nameof(EditToolTip));
-            }
-        }
-        public string EditToolTip { get; set; } = "编辑";
-        public string ListName { get; set; } = "清单列表";
-        #endregion
-
-        private bool _isSync = false;
         /// <summary>
-        /// 是否正在同步
+        /// 是否在编辑状态
         /// </summary>
-        public bool IsSync
+        public bool IsEdit
         {
-            get { return _isSync; }
-            set { _isSync = value; RaisePropertyChanged(nameof(IsSync)); }
+            get { return _isEdit; }
+            set
+            {
+                _isEdit = value;
+                //Tasks.ToList().ForEach(x =>
+                //{
+                //    x.CanMove = !IsEdit ? Visibility.Collapsed : Visibility.Visible;
+                //    x.IsEdit = IsEdit;
+                //});
+                RaisePropertyChanged(nameof(IsEdit));
+            }
         }
         #endregion
 
         #region Method
-        private void Tasks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            Tasks.ToList().ForEach(x =>
-            {
-                x.Number = x.IsEnabled ? Tasks.IndexOf(x) + 1 : x.Number;
-                if (!Edit)
-                {
-                    TaskManager.UpdateTask(x);
-                }
-            });
-            if (e.Action != System.Collections.Specialized.NotifyCollectionChangedAction.Move)
-            {
-                HasTodo = Tasks.Count <= 0 ? false : true;
-                RaisePropertyChanged(nameof(HasTodo));
-            }
-        }
-
         /// <summary>
-        /// 添加新任务
+        /// 切换编辑状态
         /// </summary>
-        /// <param name="newTask"></param>
-        public async void AddNewTask(TaskModel newTask, bool isUpdate = true)
+        public void ChangeEditState()
         {
-            if (Config.IsTaskToBottom)
-            {
-                var lastIndex = Tasks.Where(x => x.IsEnabled == true).Count();
-                Tasks.Insert(lastIndex, newTask);
-                TaskManager.AddNewTask(Tasks[lastIndex]);
-                var res = await HttpManager.Instance.PostAsync<HttpResponse>(new AddTaskRequest(Tasks[lastIndex]));
-            }
-            else
-            {
-                Tasks.Insert(0, newTask);
-                TaskManager.AddNewTask(Tasks[0]);
-                var res = await HttpManager.Instance.PostAsync<HttpResponse>(new AddTaskRequest(Tasks[0]));
-            }
+            IsEdit = !IsEdit;
+            Messenger.Default.Send(IsEdit, "EditStateChanged");
         }
-
         /// <summary>
-        /// 删除任务
+        /// 切换状态
         /// </summary>
-        /// <param name="task"></param>
-        public void RemoveTask(TaskModel task)
+        public void ChangeTopmostState()
         {
-            Tasks.Remove(task);
-            TaskManager.RemoveTask(task);
-        }
-
-        /// <summary>
-        /// 更新任务
-        /// </summary>
-        /// <param name="task"></param>
-        public void UpdateTask(TaskModel task)
-        {
-            var oldTask = Tasks.FirstOrDefault(x => x.Id == task.Id);
-            if (oldTask != null)
-            {
-                oldTask.Number = task.Number;
-                oldTask.Content = task.Content;
-                TaskManager.UpdateTask(task);
-            }
-        }
-
-        /// <summary>
-        /// 批量更新任务
-        /// </summary>
-        /// <param name="task"></param>
-        public void UpdateAllTasks()
-        {
-            TaskManager.UpdateTasks(Tasks.ToArray());
+            IsTopmost = !IsTopmost;
         }
         #endregion
     }

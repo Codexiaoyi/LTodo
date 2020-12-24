@@ -173,13 +173,13 @@ namespace LToDo
                 {
                     link.Foreground = System.Windows.Media.Brushes.Gray;
                     task.IsEnabled = !task.IsEnabled;
-                    window._mainWindowViewModel.Tasks.Move(window._mainWindowViewModel.Tasks.IndexOf(task), window._mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count());
+                    //window._mainWindowViewModel.Tasks.Move(window._mainWindowViewModel.Tasks.IndexOf(task), window._mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count());
                 }
                 else
                 {
                     link.Foreground = System.Windows.Media.Brushes.White;
                     task.IsEnabled = !task.IsEnabled;
-                    window._mainWindowViewModel.Tasks.Move(window._mainWindowViewModel.Tasks.IndexOf(task), 0);
+                    //window._mainWindowViewModel.Tasks.Move(window._mainWindowViewModel.Tasks.IndexOf(task), 0);
                 }
             }
         }

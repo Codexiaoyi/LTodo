@@ -19,7 +19,6 @@ namespace LToDo
             };
 
             SetAutoRunCommand = new RelayCommand(SetAutoRun);
-            SetTaskSiteCommand = new RelayCommand(SetTaskSite);
             ChangeAccountCommand = new RelayCommand(ChangeAccount);
             ShowMainWindowCommand = new RelayCommand(ShowMainWindow);
             HideMainWindowCommand = new RelayCommand(HideMainWindow);
@@ -72,7 +71,6 @@ namespace LToDo
 
         #region Command
         public RelayCommand SetAutoRunCommand { get; set; }
-        public RelayCommand SetTaskSiteCommand { get; set; }
         public RelayCommand ChangeAccountCommand { get; set; }
         public RelayCommand ShowMainWindowCommand { get; set; }
         public RelayCommand HideMainWindowCommand { get; set; }
@@ -96,26 +94,6 @@ namespace LToDo
                 if (result)
                 {
                     AutoRunIcon = "  √";
-                }
-            }
-        }
-
-        /// <summary>
-        /// 设置任务插入位置
-        /// </summary>
-        public void SetTaskSite()
-        {
-            TaskToBottomIcon = string.Empty;
-            if (Config.IsTaskToBottom)
-            {
-                Config.IsTaskToBottom = false;
-            }
-            else
-            {
-                var result = Config.IsTaskToBottom = true;
-                if (result)
-                {
-                    TaskToBottomIcon = "  √";
                 }
             }
         }

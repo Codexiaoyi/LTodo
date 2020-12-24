@@ -12,8 +12,6 @@ namespace LToDo
         public static string DatabasePath = Path.Combine(Path.Combine(GetBaseFolder(), "LTodo.db"));
         public static string ConfigPath = Path.Combine(Path.Combine(GetBaseFolder(), "Config.ini"));
 
-        private const string IS_TASK_TO_BOTTOM = "ISTASKTOBOTTOM";
-
         public static string GetBaseFolder()
         {
             var baseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Assembly.GetExecutingAssembly().GetName().Name);
@@ -22,18 +20,6 @@ namespace LToDo
                 Directory.CreateDirectory(baseFolder);
             }
             return baseFolder;
-        }
-
-        public static bool IsTaskToBottom
-        {
-            get
-            {
-                return bool.Parse(GetConfig(IS_TASK_TO_BOTTOM) ?? "false");
-            }
-            set
-            {
-                SetConfig(IS_TASK_TO_BOTTOM, value.ToString());
-            }
         }
 
         public static void SetConfig(string key, string value)

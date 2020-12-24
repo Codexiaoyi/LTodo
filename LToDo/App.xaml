@@ -23,7 +23,6 @@
                 </MenuItem>
                 <MenuItem Header="设置">
                     <MenuItem Header="开机自启" Command="{Binding SetAutoRunCommand}" Icon="{Binding AutoRunIcon}"/>
-                    <MenuItem Header="新项插入到底部" Command="{Binding SetTaskSiteCommand}" Icon="{Binding TaskToBottomIcon}"/>
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="退出" Command="{Binding ExitApplicationCommand}" />
