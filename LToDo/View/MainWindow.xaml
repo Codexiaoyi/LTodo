@@ -208,7 +208,7 @@
                 Height="32"
                 Margin="24,46,24,0"
                 VerticalAlignment="Top" />
-            <!--<Grid x:Name="_update" Visibility="Collapsed">
+            <Grid x:Name="_update" Visibility="{Binding IsUpdateTask,Converter={StaticResource BoolenConverter},ConverterParameter=IsEdit}">
                 <Border
                     Background="{StaticResource DarkBlack}"
                     Opacity="0.6"
@@ -227,7 +227,8 @@
                         CornerRadius="5"
                         Background="{StaticResource DarkGray}"
                         Opacity="0.8" />
-                    <TextBox x:Name="_updateText"
+                    <TextBox
+                        Text="{Binding UpdateContent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                         Height="200"
                         Padding="5"
                         VerticalContentAlignment="Top"
@@ -245,7 +246,7 @@
                             <Button
                                 Content="取消"
                                 Margin="8,2"
-                                Click="Update_Cancel_Click"
+                                Command="{Binding UpdateCancelCommand}"
                                 Foreground="{StaticResource Black}"
                                 FontSize="12"
                                 Cursor="Hand" />
@@ -254,14 +255,14 @@
                             <Button
                                 Content="确定"
                                 Margin="8,2"
-                                Click="Update_Save_Click"
+                                Command="{Binding UpdateSaveCommand}"
                                 Foreground="{StaticResource White}"
                                 FontSize="12"
                                 Cursor="Hand" />
                         </Border>
                     </StackPanel>
                 </Grid>
-            </Grid>-->
+            </Grid>
         </Grid>
     </Border>
 </Window>

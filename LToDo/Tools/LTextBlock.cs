@@ -35,7 +35,7 @@ namespace LToDo
             if (sender != null && sender is LTextBlock)
             {
                 LTextBlock view = (LTextBlock)sender;
-                if (args != null && args.NewValue != null)
+                if (args.NewValue != null)
                 {
                     string value = args.NewValue.ToString();
                     if (string.IsNullOrWhiteSpace(value))
@@ -163,24 +163,24 @@ namespace LToDo
                     p.Start();
 
                     //向cmd窗口发送输入信息 后面的&exit告诉cmd运行好之后就退出
-                    p.StandardInput.WriteLine("start " + link.Tag as string + "&exit");
+                    p.StandardInput.WriteLine("start " + (link.Tag as string) + "&exit");
                     p.StandardInput.AutoFlush = true;
                     p.WaitForExit();//等待程序执行完退出进程
                     p.Close();
                     return;
                 }
-                if (task.IsEnabled)
-                {
-                    link.Foreground = System.Windows.Media.Brushes.Gray;
-                    task.IsEnabled = !task.IsEnabled;
-                    //window._mainWindowViewModel.Tasks.Move(window._mainWindowViewModel.Tasks.IndexOf(task), window._mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count());
-                }
-                else
-                {
-                    link.Foreground = System.Windows.Media.Brushes.White;
-                    task.IsEnabled = !task.IsEnabled;
-                    //window._mainWindowViewModel.Tasks.Move(window._mainWindowViewModel.Tasks.IndexOf(task), 0);
-                }
+                //if (task.IsEnabled)
+                //{
+                //    link.Foreground = System.Windows.Media.Brushes.Gray;
+                //    task.IsEnabled = !task.IsEnabled;
+                //    //window._mainWindowViewModel.Tasks.Move(window._mainWindowViewModel.Tasks.IndexOf(task), window._mainWindowViewModel.Tasks.Where(x => x.IsEnabled == true).Count());
+                //}
+                //else
+                //{
+                //    link.Foreground = System.Windows.Media.Brushes.White;
+                //    task.IsEnabled = !task.IsEnabled;
+                //    //window._mainWindowViewModel.Tasks.Move(window._mainWindowViewModel.Tasks.IndexOf(task), 0);
+                //}
             }
         }
     }

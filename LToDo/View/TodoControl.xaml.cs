@@ -24,10 +24,5 @@ namespace LToDo.View
         {
             InitializeComponent();
         }
-
-        private void _move_IsDraggingChanged(object sender, RoutedPropertyChangedEventArgs<bool> e)
-        {
-
-        }
     }
 }

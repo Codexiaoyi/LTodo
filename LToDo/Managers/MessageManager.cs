@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LToDo
+namespace LToDo.Managers
 {
     public class MessageManager
     {

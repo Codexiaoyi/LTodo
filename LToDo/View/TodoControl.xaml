@@ -17,7 +17,7 @@
         <viewmodel:TodoControlViewModel />
     </UserControl.DataContext>
     <Grid>
-        <StackPanel Grid.Row="3"
+        <StackPanel
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Orientation="Vertical"
@@ -34,7 +34,7 @@
                 FontSize="16"
                 Foreground="{StaticResource White}" />
         </StackPanel>
-        <dragablz:DragablzItemsControl x:Name="_todoList" Grid.Row="3"
+        <dragablz:DragablzItemsControl x:Name="_todoList"
             Margin="15,0,15,12"
             ItemsSource="{Binding Tasks}"
             BorderThickness="0"
@@ -124,7 +124,13 @@
                                 LText="{Binding Content}"
                                 Background="Transparent"
                                 FontSize="14"
-                                Cursor="No">
+                                Cursor="Hand">
+                                <local:LTextBlock.InputBindings>
+                                    <MouseBinding
+                                        Command="{Binding DataContext.ClickTaskCommand, ElementName=_todoList}"
+                                        CommandParameter="{Binding}"
+                                        MouseAction="LeftClick" />
+                                </local:LTextBlock.InputBindings>
                                 <local:LTextBlock.Style>
                                     <Style TargetType="local:LTextBlock">
                                         <Style.Triggers>
@@ -142,17 +148,11 @@
                         </Border>
                         <Thumb x:Name="_move"
                             dragablz:DragablzItem.IsCustomThumb="True"
+                            Visibility="{Binding IsEdit, Converter={StaticResource BoolenConverter}, ConverterParameter=IsEdit}"
                             Cursor="Hand">
                             <Thumb.Template>
                                 <ControlTemplate>
-                                    <Border Background="Transparent" Cursor="Arrow">
-                                        <Border.InputBindings>
-                                            <MouseBinding
-                                                Command="{Binding DataContext.ClickTaskCommand, ElementName=_todoList}"
-                                                CommandParameter="{Binding}"
-                                                MouseAction="LeftDoubleClick" />
-                                        </Border.InputBindings>
-                                    </Border>
+                                    <Border Background="Transparent" />
                                 </ControlTemplate>
                             </Thumb.Template>
                         </Thumb>
@@ -164,7 +164,7 @@
                             Background="{StaticResource DarkBlack}"
                             CornerRadius="0 5 5 0"
                             Opacity="0.9"
-                            Visibility="Visible">
+                            Visibility="Collapsed">
                             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
@@ -196,22 +196,21 @@
                     <DataTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="_text" Property="Opacity" Value="0.85" />
-                            <!--<Setter TargetName="_delete" Property="Visibility" Value="{Binding IsEdit, Converter={StaticResource BoolenConverter}, ConverterParameter=IsEdit}" />-->
-                            <!--<Trigger.EnterActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <DoubleAnimation
-                                                        Storyboard.TargetName="_delete"
-                                                        Storyboard.TargetProperty="Width"
-                                                        From="0"
-                                                        To="56"
-                                                        Duration="0:0:0.4" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </Trigger.EnterActions>-->
+                            <Setter TargetName="_delete" Property="Visibility" Value="{Binding IsEdit, Converter={StaticResource BoolenConverter}, ConverterParameter=IsEdit}" />
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="_delete"
+                                            Storyboard.TargetProperty="Width"
+                                            From="0"
+                                            To="56"
+                                            Duration="0:0:0.4" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
                         </Trigger>
                     </DataTemplate.Triggers>
-
                 </DataTemplate>
             </dragablz:DragablzItemsControl.ItemTemplate>
         </dragablz:DragablzItemsControl>

@@ -1,20 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
-using LToDo.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LToDo
 {
@@ -81,36 +68,5 @@ namespace LToDo
                 slideReduce?.Begin(this);
             }
         }
-
-        //private void Update_Cancel_Click(object sender, RoutedEventArgs e)
-        //{
-        //    _update.Visibility = Visibility.Collapsed;
-        //    _updateText.Text = string.Empty;
-        //}
-
-        //private void Update_Save_Click(object sender, RoutedEventArgs e)
-        //{
-        //    _update.Visibility = Visibility.Collapsed;
-        //    var data = (sender as FrameworkElement).DataContext;
-        //    if (!string.IsNullOrEmpty(_updateText.Text) && data is TaskModel task)
-        //    {
-        //        task.Content = _updateText.Text;
-        //        //_mainWindowViewModel.UpdateTask(task);
-        //    }
-        //    _updateText.Text = string.Empty;
-        //}
-
-        //private void Update_Click(object sender, RoutedEventArgs e)
-        //{
-        //    _update.Visibility = Visibility.Visible;
-        //    var data = (sender as FrameworkElement).DataContext;
-        //    if (data is TaskModel task)
-        //    {
-        //        _updateText.Text = task.Content;
-        //        _update.DataContext = task;
-        //    }
-        //    _updateText.Focus();
-        //    _updateText.CaretIndex = _updateText.Text.Length;
-        //}
     }
 }

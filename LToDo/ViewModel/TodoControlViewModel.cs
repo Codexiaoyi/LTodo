@@ -1,15 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using LToDo.Database;
-using LToDo.Http;
-using System;
-using System.Collections.Generic;
+using LToDo.Managers;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace LToDo.ViewModel
@@ -24,8 +19,10 @@ namespace LToDo.ViewModel
         {
             Tasks.CollectionChanged += Tasks_CollectionChanged;
             Messenger.Default.Register<TaskModel>(this, "AddNewTask", (task) => AddNewTask(task));
+            Messenger.Default.Register<TaskModel>(this, "SaveTaskContent", (task) => UpdateTask(task));
+            Messenger.Default.Register<bool>(this, "EditStateChanged", (isEdit) => EditStateChanged(isEdit));
             ClickTaskCommand = new RelayCommand<TaskModel>((task) => ClickTask(task));
-            UpdateCommand = new RelayCommand<TaskModel>((task) => UpdateTask(task));
+            UpdateCommand = new RelayCommand<TaskModel>((task) => Messenger.Default.Send(task, "UpdateTaskContent"));
             DeleteCommand = new RelayCommand<TaskModel>((task) => RemoveTask(task));
         }
 
@@ -54,7 +51,6 @@ namespace LToDo.ViewModel
                 return Tasks.Count > 0;
             }
         }
-        
         #endregion
 
         #region Method
@@ -68,15 +64,12 @@ namespace LToDo.ViewModel
             Tasks.ToList().ForEach(x =>
             {
                 x.Number = x.IsEnabled ? Tasks.IndexOf(x) + 1 : x.Number;
-                //if (!IsEdit)
-                //{
-                //    TaskManager.UpdateTask(x);
-                //}
             });
             if (e.Action != NotifyCollectionChangedAction.Move)
             {
                 RaisePropertyChanged(nameof(HasTodo));
             }
+            UpdateAllTasks();
         }
 
         /// <summary>
@@ -85,21 +78,34 @@ namespace LToDo.ViewModel
         public void ClickTask(TaskModel task)
         {
             task.IsEnabled = !task.IsEnabled;
-            if (task.IsEnabled)
-                Tasks.Move(Tasks.IndexOf(task), 0);
-            else
-                Tasks.Move(Tasks.IndexOf(task), Tasks.Where(x => x.IsEnabled == true).Count());
+            Tasks.ToList().ForEach(x =>
+            {
+                x.Number = x.IsEnabled ? Tasks.IndexOf(x) + 1 : x.Number;
+            });
+            UpdateAllTasks();
+            Tasks = TaskManager.GetAllTasks();
+        }
+
+        /// <summary>
+        /// 编辑状态变化
+        /// </summary>
+        public void EditStateChanged(bool isEdit)
+        {
+            Tasks.ToList().ForEach(x =>
+            {
+                x.CanMove = !isEdit ? Visibility.Collapsed : Visibility.Visible;
+                x.IsEdit = isEdit;
+            });
         }
 
         /// <summary>
         /// 添加新任务
         /// </summary>
         /// <param name="newTask"></param>
-        public async void AddNewTask(TaskModel newTask)
+        public void AddNewTask(TaskModel newTask)
         {
             Tasks.Insert(0, newTask);
             TaskManager.AddNewTask(Tasks[0]);
-            var res = await HttpManager.Instance.PostAsync<HttpResponse>(new AddTaskRequest(Tasks[0]));
         }
 
         /// <summary>
@@ -121,8 +127,6 @@ namespace LToDo.ViewModel
             var oldTask = Tasks.FirstOrDefault(x => x.Id == task.Id);
             if (oldTask != null)
             {
-                oldTask.Number = task.Number;
-                oldTask.Content = task.Content;
                 TaskManager.UpdateTask(task);
             }
         }
@@ -141,6 +145,8 @@ namespace LToDo.ViewModel
         {
             Tasks.CollectionChanged -= Tasks_CollectionChanged;
             Messenger.Default.Unregister<TaskModel>(this, "AddNewTask", (task) => AddNewTask(task));
+            Messenger.Default.Unregister<TaskModel>(this, "SaveTaskContent", (task) => UpdateTask(task));
+            Messenger.Default.Register<bool>(this, "EditStateChanged", (isEdit) => EditStateChanged(isEdit));
         }
     }
 }

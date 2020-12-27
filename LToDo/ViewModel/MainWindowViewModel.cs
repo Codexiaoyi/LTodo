@@ -10,11 +10,16 @@ namespace LToDo.ViewModel
     {
         public RelayCommand EditCommand { get; set; }
         public RelayCommand TopmostCommand { get; set; }
+        public RelayCommand UpdateCancelCommand { get; set; }
+        public RelayCommand UpdateSaveCommand { get; set; }
 
         public MainWindowViewModel()
         {
             EditCommand = new RelayCommand(ChangeEditState);
             TopmostCommand = new RelayCommand(ChangeTopmostState);
+            UpdateCancelCommand = new RelayCommand(CancelUpdate);
+            UpdateSaveCommand = new RelayCommand(SaveUpdate);
+            Messenger.Default.Register<TaskModel>(this, "UpdateTaskContent", (task) => UpdateTaskContent(task));
             var timer = new DispatcherTimer() { Interval = TimeSpan.FromDays(1) };
             timer.Tick += (sender, e) =>
             {
@@ -54,10 +59,16 @@ namespace LToDo.ViewModel
         #endregion
 
         #region Property
+        private TaskModel CurrentTask;
         private bool _topmost = false;
         private bool _isEdit = false;
+        private bool _isUpdate = false;
+        private string _updateContent;
         private string _time = DateTime.Now.ToLongDateString().ToString();
 
+        /// <summary>
+        /// 当前时间轴
+        /// </summary>
         public string Time
         {
             get { return _time; }
@@ -80,13 +91,24 @@ namespace LToDo.ViewModel
             set
             {
                 _isEdit = value;
-                //Tasks.ToList().ForEach(x =>
-                //{
-                //    x.CanMove = !IsEdit ? Visibility.Collapsed : Visibility.Visible;
-                //    x.IsEdit = IsEdit;
-                //});
                 RaisePropertyChanged(nameof(IsEdit));
             }
+        }
+        /// <summary>
+        /// 是否更新任务
+        /// </summary>
+        public bool IsUpdateTask
+        {
+            get { return _isUpdate; }
+            set { _isUpdate = value; RaisePropertyChanged(nameof(IsUpdateTask)); }
+        }
+        /// <summary>
+        /// 更新文本
+        /// </summary>
+        public string UpdateContent
+        {
+            get { return _updateContent; }
+            set { _updateContent = value; RaisePropertyChanged(nameof(UpdateContent)); }
         }
         #endregion
 
@@ -106,6 +128,37 @@ namespace LToDo.ViewModel
         {
             IsTopmost = !IsTopmost;
         }
+        /// <summary>
+        /// 修改任务内容
+        /// </summary>
+        /// <param name="content"></param>
+        public void UpdateTaskContent(TaskModel task)
+        {
+            CurrentTask = task;
+            UpdateContent = task.Content;
+            IsUpdateTask = true;
+        }
+        /// <summary>
+        /// 保存修改
+        /// </summary>
+        public void SaveUpdate()
+        {
+            IsUpdateTask = false;
+            CurrentTask.Content = UpdateContent;
+            Messenger.Default.Send<TaskModel>(CurrentTask, "SaveTaskContent");
+        }
+        /// <summary>
+        /// 取消修改
+        /// </summary>
+        public void CancelUpdate()
+        {
+            IsUpdateTask = false;
+        }
         #endregion
+
+        ~MainWindowViewModel()
+        {
+            Messenger.Default.Unregister<TaskModel>(this, "UpdateTaskContent", (task) => UpdateTaskContent(task));
+        }
     }
 }
