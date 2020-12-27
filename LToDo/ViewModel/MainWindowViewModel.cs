@@ -59,7 +59,7 @@ namespace LToDo.ViewModel
         #endregion
 
         #region Property
-        private TaskModel CurrentTask;
+        public TaskModel CurrentTask;
         private bool _topmost = false;
         private bool _isEdit = false;
         private bool _isUpdate = false;
