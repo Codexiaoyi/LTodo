@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace LToDo.ViewModel
 {
@@ -13,7 +14,7 @@ namespace LToDo.ViewModel
     {
         public InputControlViewModel()
         {
-            AddCommand = new RelayCommand(AddNewTask);
+            AddCommand = new RelayCommand<string>((param) => AddNewTask(bool.Parse(param)));
             ChangeSizeCommand = new RelayCommand(ChangeSize);
         }
 
@@ -43,7 +44,7 @@ namespace LToDo.ViewModel
         }
         #endregion
 
-        public RelayCommand AddCommand { get; set; }
+        public RelayCommand<string> AddCommand { get; set; }
         public RelayCommand ChangeSizeCommand { get; set; }
 
         #region Method
@@ -51,12 +52,16 @@ namespace LToDo.ViewModel
         /// 添加新任务
         /// </summary>
         /// <param name="newTask"></param>
-        public void AddNewTask()
+        public void AddNewTask(bool isKey)
         {
-            if (!string.IsNullOrEmpty(NewTaskContent) && !IsMultiInput)
+            if (!string.IsNullOrEmpty(NewTaskContent))
             {
+                if (isKey && IsMultiInput)
+                    return;
                 Messenger.Default.Send(new TaskModel() { Content = NewTaskContent }, "AddNewTask");
                 NewTaskContent = string.Empty;
+                if (IsMultiInput)
+                    ChangeSize();
             }
         }
 

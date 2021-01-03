@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace LToDo.View
 {
@@ -23,6 +25,15 @@ namespace LToDo.View
         public TodoControl()
         {
             InitializeComponent();
+        }
+
+        private void _todoList_LogicalIndexChanged(object sender, RoutedPropertyChangedEventArgs<int> e)
+        {
+            if (e.OriginalSource is FrameworkElement element && element.DataContext is TaskModel task)
+            {
+                task.Number = e.NewValue;
+                Messenger.Default.Send(task, "EndDrag");
+            }
         }
     }
 }

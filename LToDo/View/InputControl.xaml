@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:LToDo"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:view="clr-namespace:LToDo.View"
     xmlns:viewmodel="clr-namespace:LToDo.ViewModel"
     mc:Ignorable="d">
@@ -35,9 +36,11 @@
                 VerticalAlignment="Top"
                 AcceptsReturn="{Binding IsMultiInput, Converter={StaticResource BoolenConverter}, ConverterParameter=AcceptsReturn}"
                 AcceptsTab="True">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Return" Command="{Binding AddCommand}" />
-                </TextBox.InputBindings>
+                <i:Interaction.Triggers>
+                    <i:KeyTrigger Key="Return">
+                        <i:InvokeCommandAction Command="{Binding AddCommand}" CommandParameter="True"/>
+                    </i:KeyTrigger>
+                </i:Interaction.Triggers>
                 <TextBox.Resources>
                     <VisualBrush
                         x:Key="HintText"
@@ -103,6 +106,7 @@
                     <Button
                         Content="保存"
                         Command="{Binding AddCommand}"
+                        CommandParameter="False"
                         Margin="8,2"
                         Cursor="Hand"
                         FontSize="12"

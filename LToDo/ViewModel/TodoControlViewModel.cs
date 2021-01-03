@@ -21,6 +21,7 @@ namespace LToDo.ViewModel
             Messenger.Default.Register<TaskModel>(this, "AddNewTask", (task) => AddNewTask(task));
             Messenger.Default.Register<TaskModel>(this, "SaveTaskContent", (task) => UpdateTask(task));
             Messenger.Default.Register<bool>(this, "EditStateChanged", (isEdit) => EditStateChanged(isEdit));
+            Messenger.Default.Register<TaskModel>(this, "EndDrag", (task) => UpdateTask(task));
             ClickTaskCommand = new RelayCommand<TaskModel>((task) => ClickTask(task));
             UpdateCommand = new RelayCommand<TaskModel>((task) => Messenger.Default.Send(task, "UpdateTaskContent"));
             DeleteCommand = new RelayCommand<TaskModel>((task) => RemoveTask(task));
@@ -146,7 +147,8 @@ namespace LToDo.ViewModel
             Tasks.CollectionChanged -= Tasks_CollectionChanged;
             Messenger.Default.Unregister<TaskModel>(this, "AddNewTask", (task) => AddNewTask(task));
             Messenger.Default.Unregister<TaskModel>(this, "SaveTaskContent", (task) => UpdateTask(task));
-            Messenger.Default.Register<bool>(this, "EditStateChanged", (isEdit) => EditStateChanged(isEdit));
+            Messenger.Default.Unregister<bool>(this, "EditStateChanged", (isEdit) => EditStateChanged(isEdit));
+            Messenger.Default.Unregister<TaskModel>(this, "EndDrag", (task) => UpdateTask(task));
         }
     }
 }

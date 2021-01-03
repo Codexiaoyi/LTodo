@@ -39,6 +39,7 @@
             ItemsSource="{Binding Tasks}"
             BorderThickness="0"
             Background="Transparent"
+            dragablz:DragablzItem.LogicalIndexChanged="_todoList_LogicalIndexChanged"
             Visibility="{Binding HasTodo, Converter={StaticResource HasToDoToVisibilityConverter}, ConverterParameter=ListBox}">
             <dragablz:DragablzItemsControl.ItemsOrganiser>
                 <dragablz:VerticalOrganiser />

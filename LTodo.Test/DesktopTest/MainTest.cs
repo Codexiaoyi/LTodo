@@ -6,43 +6,35 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace LTodo.Test.DesktopTest
 {
     [TestClass]
-    public class MainTest
+    public class MainTest : BaseTest<MainWindowViewModel>
     {
-        private MainWindowViewModel _main;
-
-        [TestInitialize]
-        public void Init()
-        {
-            _main = new MainWindowViewModel();
-        }
-
         [TestMethod]
         public void Change_Edit_State_Test()
         {
-            var newEdit = _main.IsEdit;
+            var newEdit = _testClass.IsEdit;
             Messenger.Default.Register<bool>(this, "EditStateChanged", (edit) => { newEdit = edit; });
-            var oldEdit = _main.IsEdit;
-            _main.ChangeEditState();
-            Assert.IsTrue(!oldEdit == _main.IsEdit);
+            var oldEdit = _testClass.IsEdit;
+            _testClass.ChangeEditState();
+            Assert.IsTrue(!oldEdit == _testClass.IsEdit);
             Assert.IsTrue(!oldEdit == newEdit);
         }
 
         [TestMethod]
         public void Change_Topmost_State_Test()
         {
-            var oldTop = _main.IsTopmost;
-            _main.ChangeTopmostState();
-            Assert.IsTrue(!oldTop == _main.IsTopmost);
+            var oldTop = _testClass.IsTopmost;
+            _testClass.ChangeTopmostState();
+            Assert.IsTrue(!oldTop == _testClass.IsTopmost);
         }
 
         [TestMethod]
         public void Update_Task_Content_Test()
         {
             var newTask = DataSeed.GetTask();
-            _main.UpdateTaskContent(newTask);
-            Assert.AreEqual(newTask, _main.CurrentTask);
-            Assert.AreEqual(newTask.Content, _main.UpdateContent);
-            Assert.IsTrue(_main.IsUpdateTask);
+            _testClass.UpdateTaskContent(newTask);
+            Assert.AreEqual(newTask, _testClass.CurrentTask);
+            Assert.AreEqual(newTask.Content, _testClass.UpdateContent);
+            Assert.IsTrue(_testClass.IsUpdateTask);
         }
 
         [TestMethod]
@@ -51,19 +43,19 @@ namespace LTodo.Test.DesktopTest
             var ct = DataSeed.GetTask();
             TaskModel msgTask = ct;
             Messenger.Default.Register<TaskModel>(this, "SaveTaskContent", (task) => { msgTask = task; });
-            _main.CurrentTask = ct;
-            _main.UpdateContent = "New Test";
-            _main.SaveUpdate();
-            Assert.IsFalse(_main.IsUpdateTask);
-            Assert.AreEqual(_main.CurrentTask.Content, "New Test");
-            Assert.AreEqual(_main.CurrentTask, msgTask);
+            _testClass.CurrentTask = ct;
+            _testClass.UpdateContent = "New Test";
+            _testClass.SaveUpdate();
+            Assert.IsFalse(_testClass.IsUpdateTask);
+            Assert.AreEqual(_testClass.CurrentTask.Content, "New Test");
+            Assert.AreEqual(_testClass.CurrentTask, msgTask);
         }
 
         [TestMethod]
         public void Cancel_Update_Test()
         {
-            _main.CancelUpdate();
-            Assert.IsFalse(_main.IsUpdateTask);
+            _testClass.CancelUpdate();
+            Assert.IsFalse(_testClass.IsUpdateTask);
         }
     }
 }
